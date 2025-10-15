@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Delete User API</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; width: 300px; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Test Delete User API</h1>
+    
+    <div class="section">
+        <h2>1. Login First</h2>
+        <input type="text" id="loginEpf" placeholder="EPF (e.g., 50005)" value="50005"><br>
+        <input type="password" id="loginPassword" placeholder="Password" value="admin1234"><br>
+        <button onclick="login()">Login</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. Test Delete User</h2>
+        <input type="text" id="deleteEpf" placeholder="EPF to delete" value="99999"><br>
+        <button onclick="testDelete()">Delete User</button>
+        <div id="deleteResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Network Details</h2>
+        <pre id="networkInfo"></pre>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXEEoHXjS8fz1SWFY0WpIRPCqO58b6YHc",
+            authDomain: "oct-project-25fad.firebaseapp.com",
+            projectId: "oct-project-25fad",
+            storageBucket: "oct-project-25fad.firebasestorage.app",
+            messagingSenderId: "691324291866",
+            appId: "1:691324291866:web:7a8ea7856f8ab3d7f26743"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const API_BASE = 'http://localhost:8000';
+
+        window.login = async function() {
+            const epf = document.getElementById('loginEpf').value;
+            const password = document.getElementById('loginPassword').value;
+            const resultDiv = document.getElementById('loginResult');
+            
+            try {
+                resultDiv.innerHTML = '🔄 Logging in...';
+                
+                // Get email from Firestore
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where('__name__', '==', epf));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    throw new Error('User not found in Firestore');
+                }
+                
+                const email = snapshot.docs[0].data().email;
+                console.log('Found email:', email);
+                
+                // Sign in
+                const userCred = await signInWithEmailAndPassword(auth, email, password);
+                const token = await userCred.user.getIdToken(true);
+                
+                resultDiv.innerHTML = `<div class="success">✅ Logged in successfully!<br>UID: ${userCred.user.uid}<br>Token: ${token.substring(0, 50)}...</div>`;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Login failed: ${error.message}</div>`;
+                console.error('Login error:', error);
+            }
+        };
+
+        window.testDelete = async function() {
+            const epf = document.getElementById('deleteEpf').value;
+            const resultDiv = document.getElementById('deleteResult');
+            const networkDiv = document.getElementById('networkInfo');
+            
+            try {
+                resultDiv.innerHTML = '🔄 Testing delete...';
+                
+                if (!auth.currentUser) {
+                    throw new Error('Not logged in! Please login first.');
+                }
+                
+                // Get fresh token
+                const token = await auth.currentUser.getIdToken(true);
+                console.log('Using token:', token.substring(0, 50) + '...');
+                
+                // Test delete
+                const url = `${API_BASE}/auth/delete-user`;
+                console.log('Calling:', url);
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ epf: epf })
+                });
+                
+                networkDiv.textContent = `Status: ${response.status} ${response.statusText}\n`;
+                networkDiv.textContent += `URL: ${url}\n`;
+                networkDiv.textContent += `Headers: ${JSON.stringify([...response.headers], null, 2)}\n`;
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${data.detail || JSON.stringify(data)}`);
+                }
+                
+                resultDiv.innerHTML = `<div class="success">✅ Delete successful!<br><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Delete failed: ${error.message}</div>`;
+                networkDiv.textContent += `\nError: ${error.message}\nStack: ${error.stack}`;
+                console.error('Delete error:', error);
+            }
+        };
+
+        // Show network info on load
+        document.getElementById('networkInfo').textContent = 
+            `API Base: ${API_BASE}\n` +
+            `Current URL: ${window.location.href}\n` +
+            `User Agent: ${navigator.userAgent}\n` +
+            `Online: ${navigator.onLine}`;
+    </script>
+</body>
+</html>

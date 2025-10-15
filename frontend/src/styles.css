@@ -1,0 +1,4 @@
+body { font-family: Arial, sans-serif; }
+/* Global input styles - use lower specificity so component styles can override */
+input:not([class*="form-row"]) { margin: 4px 0; padding: 6px }
+button:not([class*="ad-"]) { margin: 6px }
