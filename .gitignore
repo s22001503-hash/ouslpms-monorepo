@@ -1,7 +1,56 @@
+# Node / React
 node_modules/
-__pycache__/
-.env
-.env.*
-*.pyc
 dist/
 build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+.installed.cfg
+
+# Environment variables (CRITICAL - DO NOT COMMIT!)
+.env
+.env.*
+!.env.example
+
+# Firebase credentials (CRITICAL - DO NOT COMMIT!)
+**/firebase-adminsdk*.json
+**/serviceAccountKey*.json
+firebase-debug.log
+.firebase/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
