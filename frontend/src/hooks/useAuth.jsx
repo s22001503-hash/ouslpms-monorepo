@@ -54,9 +54,10 @@ export function AuthProvider({ children }) {
           setUserRole('user')
         }
       } else {
+        // User logged out - clear all state and sessionStorage
         setUserRole(null)
         setUserEpf(null)
-        sessionStorage.removeItem('userEpf')
+        sessionStorage.clear()
       }
       setLoading(false)
     })
@@ -106,7 +107,12 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const logout = () => signOut(auth)
+  const logout = () => {
+    // Clear sessionStorage to prevent role persistence across logins
+    sessionStorage.removeItem('userEpf')
+    sessionStorage.clear()
+    return signOut(auth)
+  }
 
   const changePassword = (newPassword) => {
     if (!auth.currentUser) return Promise.reject(new Error('No user'))

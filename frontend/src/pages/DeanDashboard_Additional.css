@@ -1,0 +1,397 @@
+/* Additional styles for Dean Dashboard */
+
+.ad-message {
+  padding: 12px 20px;
+  margin: 20px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.ad-message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.ad-message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.ad-badge {
+  background: #ff4444;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+.ad-badge-info {
+  background: #4CAF50;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ad-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.ad-card-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Proposals List */
+.proposals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.proposal-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fafafa;
+  transition: box-shadow 0.3s ease;
+}
+
+.proposal-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.proposal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.proposal-header h4 {
+  margin: 0 0 5px 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.proposal-email {
+  color: #666;
+  font-size: 0.875rem;
+  margin: 5px 0;
+}
+
+.proposal-time {
+  color: #999;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+
+.proposal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-approve, .btn-reject {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.btn-approve {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-approve:hover:not(:disabled) {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+.btn-reject {
+  background: #f44336;
+  color: white;
+}
+
+.btn-reject:hover:not(:disabled) {
+  background: #da190b;
+  transform: translateY(-2px);
+}
+
+.btn-approve:disabled, .btn-reject:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.proposal-settings {
+  margin-top: 15px;
+}
+
+.proposal-settings h5 {
+  margin: 0 0 10px 0;
+  color: #555;
+  font-size: 1rem;
+}
+
+.settings-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.settings-table th,
+.settings-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.settings-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.settings-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.proposed-value {
+  font-weight: 600;
+  color: #4CAF50;
+}
+
+/* Notifications List */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  background: #fafafa;
+  border-radius: 10px;
+  border-left: 4px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.notification-item:hover {
+  background: #f0f0f0;
+  transform: translateX(5px);
+}
+
+.notification-item.high {
+  border-left-color: #ff9800;
+  background: #fff3e0;
+}
+
+.notification-item.medium {
+  border-left-color: #2196F3;
+  background: #e3f2fd;
+}
+
+.notif-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.notif-content {
+  flex: 1;
+}
+
+.notif-content h4 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.notif-content p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.notif-time {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.notif-badge {
+  flex-shrink: 0;
+}
+
+.unread-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #ff4444;
+  border-radius: 50%;
+}
+
+/* Reports Container */
+.reports-container {
+  padding: 20px;
+}
+
+.report-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 12px;
+}
+
+.report-section h4 {
+  margin: 0 0 15px 0;
+  font-size: 1.3rem;
+  color: #333;
+  border-bottom: 2px solid #4CAF50;
+  padding-bottom: 10px;
+}
+
+.report-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.stat-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.report-table th,
+.report-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.report-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+}
+
+.report-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.report-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.report-table .pending {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.report-table .approved {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.report-table .rejected {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.report-footer {
+  margin-top: 20px;
+  padding: 15px;
+  background: #e8f5e9;
+  border-radius: 8px;
+  text-align: center;
+  color: #2e7d32;
+  font-style: italic;
+}
+
+.btn-export {
+  padding: 10px 20px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-export:hover {
+  background: #0b7dda;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .proposal-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .proposal-actions {
+    width: 100%;
+  }
+
+  .btn-approve, .btn-reject {
+    flex: 1;
+  }
+
+  .settings-table {
+    font-size: 0.85rem;
+  }
+
+  .settings-table th,
+  .settings-table td {
+    padding: 8px 10px;
+  }
+
+  .report-stats {
+    grid-template-columns: 1fr;
+  }
+}

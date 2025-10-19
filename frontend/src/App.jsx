@@ -3,8 +3,10 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import UserDashboard from './pages/UserDashboard'
 import AdminDashboard from './pages/AdminDashboard'
+import DeanDashboard from './pages/DeanDashboard'
 import UserDashboardUI from './pages/UserDashboardUI'
 import AdminDashboardUI from './pages/AdminDashboardUI'
+import DeanDashboardUI from './pages/DeanDashboardUI'
 import ChangePassword from './pages/ChangePassword'
 import { AuthProvider, useAuth } from './hooks/useAuth'
 
@@ -14,13 +16,14 @@ function ProtectedRoute({ children, role }) {
   // Show loading state while auth is being determined
   if (loading) return <div style={{padding: 20}}>Loading...</div>
   
-  // Not logged in - redirect to login
+  // Not logged in - redirect to login (with replace to prevent back button loop)
   if (!user) return <Navigate to="/login" replace />
   
   // If a specific role is required and user doesn't have it, redirect
   if (role && userRole && userRole !== role) {
-    // Redirect to correct dashboard based on actual role
+    // Redirect to correct dashboard based on actual role (with replace)
     if (userRole === 'admin') return <Navigate to="/admin" replace />
+    if (userRole === 'dean') return <Navigate to="/dean" replace />
     if (userRole === 'user') return <Navigate to="/user" replace />
     return <Navigate to="/login" replace />
   }
@@ -32,7 +35,7 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route
           path="/user"
           element={
@@ -46,6 +49,14 @@ export default function App() {
           element={
             <ProtectedRoute role="admin">
               <AdminDashboardUI />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dean"
+          element={
+            <ProtectedRoute role="dean">
+              <DeanDashboardUI />
             </ProtectedRoute>
           }
         />

@@ -1,64 +1,106 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
-import { auth } from '../firebase'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { auth, db } from '../firebase'
 import './LoginPage.css'
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const [epf, setEpf] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const { login, userRole } = useAuth()
-  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
 
-  const [loadingRedirect, setLoadingRedirect] = React.useState(false)
-
-  const handleLoginAsUser = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
     setError(null)
-    setIsLoading(true)
-    
-    try {
-      await login(epf, password)
-      setLoadingRedirect(true)
-    } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.')
-      setIsLoading(false)
-    }
-  }
 
-  const handleLoginAsAdmin = async (e) => {
-    e.preventDefault()
-    setError(null)
-    setIsLoading(true)
-    
-    try {
-      await login(epf, password)
-      setLoadingRedirect(true)
-    } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.')
-      setIsLoading(false)
+    if (!epf || !password) {
+      setError('Please enter both EPF and password')
+      setLoading(false)
+      return
     }
-  }
 
-  // when loadingRedirect becomes true, wait for userRole to populate
-  React.useEffect(() => {
-    if (loadingRedirect) {
-      if (userRole) {
-        if (userRole === 'admin') navigate('/admin')
-        else navigate('/user')
-      } else {
-        // If role still null after some time, fallback to /user
-        const t = setTimeout(() => {
-          navigate('/user')
-        }, 2000)
-        return () => clearTimeout(t)
+    try {
+      // Trim whitespace from EPF input
+      const cleanEpf = epf.trim()
+      const email = `${cleanEpf}@ousl.edu.lk`
+      
+      console.log('Login attempt:', { epf: cleanEpf, email })
+      
+      // Clear any previous session data before logging in
+      sessionStorage.clear()
+      
+      // Get user data from Firestore FIRST to verify role exists
+      const userDoc = await getDoc(doc(db, 'users', cleanEpf))
+      
+      if (!userDoc.exists()) {
+        setError('User not found. Please contact administrator.')
+        setLoading(false)
+        return
       }
+      
+      const userData = userDoc.data()
+      const userRole = userData.role
+
+      console.log('=== LOGIN DEBUG ===')
+      console.log('EPF:', cleanEpf)
+      console.log('User Data:', userData)
+      console.log('User Role:', userRole)
+      console.log('Role Type:', typeof userRole)
+
+      // Store EPF in sessionStorage BEFORE signing in so useAuth can read it immediately
+      sessionStorage.setItem('userEpf', cleanEpf)
+      
+      // Sign in with Firebase Auth
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const user = userCredential.user
+
+      // Update last login timestamp
+      await updateDoc(doc(db, 'users', cleanEpf), {
+        lastLogin: new Date().toISOString()
+      })
+
+      console.log(`User logged in: ${userData.name} (Role: ${userRole})`)
+
+      // Redirect based on role - automatically detect and route
+      if (userRole === 'admin') {
+        console.log('Navigating to /admin')
+        navigate('/admin', { replace: true })
+      } else if (userRole === 'dean') {
+        console.log('Navigating to /dean')
+        navigate('/dean', { replace: true })
+      } else if (userRole === 'user') {
+        console.log('Navigating to /user')
+        navigate('/user', { replace: true })
+      } else {
+        console.log('Invalid role detected:', userRole)
+        setError('Invalid user role. Please contact administrator.')
+        await signOut(auth)
+      }
+    } catch (err) {
+      console.error('Login error:', err)
+      console.error('Error code:', err.code)
+      console.error('Error message:', err.message)
+      
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        setError('Invalid EPF or password')
+      } else if (err.code === 'auth/invalid-credential') {
+        setError('Invalid credentials. Please check your EPF and password.')
+      } else if (err.code === 'auth/invalid-email') {
+        setError(`Invalid email format. Tried: ${epf.trim()}@ousl.edu.lk`)
+      } else if (err.code === 'auth/too-many-requests') {
+        setError('Too many failed login attempts. Please try again later.')
+      } else {
+        setError(err.message || 'Login failed. Please try again.')
+      }
+    } finally {
+      setLoading(false)
     }
-  }, [loadingRedirect, userRole, navigate])
+  }
 
   return (
     <div className="login-container">
@@ -71,7 +113,17 @@ export default function LoginPage() {
           <p className="subtitle">Smart Print Management System</p>
         </div>
 
-  <form className="login-form" autoComplete="off">
+        <form onSubmit={handleSubmit} className="login-form" autoComplete="off">
+          {error && (
+            <div className="error-message">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="currentColor" strokeWidth="2"/>
+                <path d="M10 6V10M10 14H10.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              <span>{error}</span>
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="epf">EPF Number</label>
             <input
@@ -83,7 +135,7 @@ export default function LoginPage() {
               onChange={(e) => setEpf(e.target.value)}
               placeholder="Enter your EPF Number"
               required
-              disabled={isLoading}
+              disabled={loading}
             />
           </div>
           
@@ -99,64 +151,33 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your Password"
                 required
-                disabled={isLoading}
+                disabled={loading}
               />
               <button
                 type="button"
                 className="show-password-btn"
-                onClick={() => setShowPassword((s) => !s)}
+                onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
                 title={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? (
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 3l18 18" stroke="#2d3748" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M10.58 10.58A3 3 0 0 0 13.42 13.42" stroke="#2d3748" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 5c5 0 9 4 9 7s-4 7-9 7c-1.27 0-2.47-.22-3.57-.62" stroke="#2d3748" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#2d3748" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <circle cx="12" cy="12" r="3" stroke="#2d3748" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                )}
+                {showPassword ? '👁️' : '👁️‍🗨️'}
               </button>
             </div>
           </div>
 
-          {error && (
-            <div className="error-message">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="currentColor" strokeWidth="2"/>
-                <path d="M10 6V10M10 14H10.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-              <span>{error}</span>
-            </div>
-          )}
-
           <button 
             type="submit" 
-            onClick={handleLoginAsUser}
             className="login-button primary" 
-            disabled={isLoading}
+            disabled={loading}
           >
-            {isLoading ? (
+            {loading ? (
               <>
                 <span className="spinner"></span>
                 Logging in...
               </>
             ) : (
-              'Login as User'
+              'Login'
             )}
-          </button>
-
-          <button 
-            type="button"
-            onClick={handleLoginAsAdmin}
-            className="login-button secondary" 
-            disabled={isLoading}
-          >
-            Login as Admin
           </button>
         </form>
       </div>

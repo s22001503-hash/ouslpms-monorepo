@@ -69,6 +69,51 @@ async def verify_admin(authorization: str = Header(None)):
     except Exception as e:
         raise HTTPException(status_code=401, detail=f'Token verification failed: {str(e)}')
 
+# Dean verification dependency
+async def verify_dean(authorization: str = Header(None)):
+    """Verify that the request comes from an authenticated dean user."""
+    if not authorization or not authorization.startswith('Bearer '):
+        raise HTTPException(status_code=401, detail='Missing or invalid authorization header')
+    
+    token = authorization.split(' ', 1)[1]
+    
+    if not firebase_admin._apps:
+        raise HTTPException(status_code=500, detail='Firebase Admin not configured')
+    
+    try:
+        # Verify the token
+        decoded = firebase_auth.verify_id_token(token)
+        uid = decoded.get('uid')
+        
+        # Get user's role from Firestore
+        db = firestore.client()
+        
+        # Try document by UID first
+        doc_ref = db.collection('users').document(uid)
+        doc = doc_ref.get()
+        
+        if doc.exists:
+            role = doc.to_dict().get('role', 'user')
+        else:
+            # Try query by uid field
+            users_ref = db.collection('users')
+            query = users_ref.where('uid', '==', uid).limit(1)
+            results = list(query.stream())
+            
+            if results:
+                role = results[0].to_dict().get('role', 'user')
+            else:
+                raise HTTPException(status_code=403, detail='User not found in database')
+        
+        if role != 'dean':
+            raise HTTPException(status_code=403, detail='Dean access required')
+        
+        return {'uid': uid, 'role': role}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f'Token verification failed: {str(e)}')
+
 # initialize firebase admin with better diagnostics and Certificate usage
 cred = None
 import json as _json

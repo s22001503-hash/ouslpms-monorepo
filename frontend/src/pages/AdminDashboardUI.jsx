@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { createUser, deleteUser } from '../services/api'
+import { createUser, deleteUser, fetchOverviewStats as fetchOverviewStatsAPI } from '../services/api'
 import ChangePassword from '../components/ChangePassword'
+import OverviewTab from '../components/OverviewTab'
+import SettingsProposalTab from '../components/SettingsProposalTab'
 import './AdminDashboardUI.css'
 
 export default function AdminDashboardUI() {
@@ -19,9 +21,44 @@ export default function AdminDashboardUI() {
   const [deleteMessage, setDeleteMessage] = useState({ type: '', text: '' })
   const [loading, setLoading] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
-  const [activeView, setActiveView] = useState('add') // 'add', 'remove', or 'changePassword'
+  const [activeView, setActiveView] = useState('overview') // 'overview', 'add', 'remove', 'settingsProposal', or 'changePassword'
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [overviewStats, setOverviewStats] = useState({
+    todayPrintJobs: 0,
+    pendingProposals: 0,
+    blockedAttempts: 0,
+    activeUsers: 0,
+    recentActivity: []
+  })
+
+  // Fetch overview stats on mount
+  useEffect(() => {
+    if (activeView === 'overview') {
+      loadOverviewStats()
+    }
+  }, [activeView])
+
+  const loadOverviewStats = async () => {
+    try {
+      const data = await fetchOverviewStatsAPI()
+      setOverviewStats(data)
+    } catch (error) {
+      console.error('Failed to fetch overview stats:', error)
+      // Fallback to mock data if API fails
+      setOverviewStats({
+        todayPrintJobs: 0,
+        pendingProposals: 0,
+        blockedAttempts: 0,
+        activeUsers: 0,
+        recentActivity: []
+      })
+    }
+  }
+
+  const handleNavigate = (view) => {
+    setActiveView(view)
+  }
 
   const departments = ['Computer Science', 'Engineering', 'Mathematics', 'Library']
 
@@ -86,16 +123,10 @@ export default function AdminDashboardUI() {
 
         <nav className="ad-nav">
           <button 
-            className={`ad-nav-item ${activeView === 'add' ? 'active' : ''}`}
-            onClick={() => setActiveView('add')}
+            className={`ad-nav-item ${activeView === 'overview' ? 'active' : ''}`}
+            onClick={() => setActiveView('overview')}
           >
-            👤➕ Add User
-          </button>
-          <button 
-            className={`ad-nav-item ${activeView === 'remove' ? 'active' : ''}`}
-            onClick={() => setActiveView('remove')}
-          >
-            👤➖ Remove User
+            🏠 Overview
           </button>
           <button className="ad-nav-item">🔔 Notifications</button>
           <button className="ad-nav-item">📊 Generate Report</button>
@@ -125,6 +156,22 @@ export default function AdminDashboardUI() {
         </section>
 
         <section className="ad-main">
+          {activeView === 'overview' && (
+            <OverviewTab 
+              stats={overviewStats} 
+              onNavigate={handleNavigate}
+              quickActions={[
+                { icon: '👤➕', label: 'Add User', view: 'add' },
+                { icon: '👤➖', label: 'Remove User', view: 'remove' },
+                { icon: '⚙️', label: 'Propose Settings', view: 'settingsProposal' }
+              ]}
+            />
+          )}
+
+          {activeView === 'settingsProposal' && (
+            <SettingsProposalTab adminId={user?.epf} />
+          )}
+
           {activeView === 'add' && (
             <div className="ad-card ad-add-user">
               <div className="ad-card-header">Add User</div>
