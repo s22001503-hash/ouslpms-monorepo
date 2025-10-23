@@ -17,9 +17,6 @@ class ProposeSettingsRequest(BaseModel):
 class SystemSettings(BaseModel):
     maxCopiesPerDocument: int
     maxPrintAttemptsPerDay: int
-    maxPagesPerJob: int
-    dailyQuota: int
-    allowColorPrinting: bool
 
 class SettingsProposal(BaseModel):
     id: str
@@ -145,7 +142,7 @@ async def get_overview_stats(current_user: dict = Depends(verify_admin)):
 async def get_system_settings(current_user: dict = Depends(verify_admin)):
     """
     Get current approved system settings.
-    Returns: maxCopiesPerDocument, maxPrintAttemptsPerDay, maxPagesPerJob, dailyQuota, allowColorPrinting
+    Returns: maxCopiesPerDocument (per day), maxPrintAttemptsPerDay
     """
     try:
         db = get_firestore_db()
@@ -159,9 +156,6 @@ async def get_system_settings(current_user: dict = Depends(verify_admin)):
             return {
                 'maxCopiesPerDocument': data.get('maxCopiesPerDocument', 10),
                 'maxPrintAttemptsPerDay': data.get('maxPrintAttemptsPerDay', 50),
-                'maxPagesPerJob': data.get('maxPagesPerJob', 100),
-                'dailyQuota': data.get('dailyQuota', 500),
-                'allowColorPrinting': data.get('allowColorPrinting', True),
                 'lastModified': data.get('lastModified'),
                 'modifiedBy': data.get('modifiedBy'),
                 'modifiedByName': data.get('modifiedByName')
@@ -172,9 +166,6 @@ async def get_system_settings(current_user: dict = Depends(verify_admin)):
             default_settings = {
                 'maxCopiesPerDocument': 10,
                 'maxPrintAttemptsPerDay': 50,
-                'maxPagesPerJob': 100,
-                'dailyQuota': 500,
-                'allowColorPrinting': True,
                 'lastModified': format_timestamp(datetime.now()),
                 'modifiedBy': 'system',
                 'modifiedByName': 'System Default'
@@ -250,7 +241,7 @@ async def propose_settings(
         proposed = request.proposedSettings
         
         # Check required fields
-        required_fields = ['maxCopiesPerDocument', 'maxPrintAttemptsPerDay', 'maxPagesPerJob', 'dailyQuota', 'allowColorPrinting']
+        required_fields = ['maxCopiesPerDocument', 'maxPrintAttemptsPerDay']
         for field in required_fields:
             if field not in proposed:
                 raise HTTPException(status_code=400, detail=f'Missing required field: {field}')
@@ -261,12 +252,6 @@ async def propose_settings(
         
         if not (1 <= proposed.get('maxPrintAttemptsPerDay', 0) <= 200):
             raise HTTPException(status_code=400, detail='maxPrintAttemptsPerDay must be between 1 and 200')
-        
-        if not (1 <= proposed.get('maxPagesPerJob', 0) <= 500):
-            raise HTTPException(status_code=400, detail='maxPagesPerJob must be between 1 and 500')
-        
-        if not (1 <= proposed.get('dailyQuota', 0) <= 2000):
-            raise HTTPException(status_code=400, detail='dailyQuota must be between 1 and 2000')
         
         # Check if admin already has a pending proposal
         existing_pending = db.collection('settings_requests')\

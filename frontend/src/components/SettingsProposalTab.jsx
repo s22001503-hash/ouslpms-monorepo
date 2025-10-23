@@ -5,18 +5,12 @@ import './SettingsProposalTab.css'
 export default function SettingsProposalTab({ adminId }) {
   const [currentSettings, setCurrentSettings] = useState({
     maxCopiesPerDocument: 0,
-    maxPrintAttemptsPerDay: 0,
-    maxPagesPerJob: 0,
-    dailyQuota: 0,
-    allowColorPrinting: false
+    maxPrintAttemptsPerDay: 0
   })
 
   const [proposedSettings, setProposedSettings] = useState({
     maxCopiesPerDocument: '',
-    maxPrintAttemptsPerDay: '',
-    maxPagesPerJob: '',
-    dailyQuota: '',
-    allowColorPrinting: false
+    maxPrintAttemptsPerDay: ''
   })
 
   const [proposals, setProposals] = useState([])
@@ -33,23 +27,20 @@ export default function SettingsProposalTab({ adminId }) {
   const fetchCurrentSettings = async () => {
     try {
       const data = await fetchSystemSettings()
-      setCurrentSettings(data)
+      setCurrentSettings({
+        maxCopiesPerDocument: data.maxCopiesPerDocument,
+        maxPrintAttemptsPerDay: data.maxPrintAttemptsPerDay
+      })
       setProposedSettings({
         maxCopiesPerDocument: data.maxCopiesPerDocument,
-        maxPrintAttemptsPerDay: data.maxPrintAttemptsPerDay,
-        maxPagesPerJob: data.maxPagesPerJob,
-        dailyQuota: data.dailyQuota,
-        allowColorPrinting: data.allowColorPrinting
+        maxPrintAttemptsPerDay: data.maxPrintAttemptsPerDay
       })
     } catch (error) {
       console.error('Failed to fetch settings:', error)
       // Fallback to mock data if API fails
       const mockSettings = {
         maxCopiesPerDocument: 10,
-        maxPrintAttemptsPerDay: 50,
-        maxPagesPerJob: 100,
-        dailyQuota: 500,
-        allowColorPrinting: true
+        maxPrintAttemptsPerDay: 50
       }
       setCurrentSettings(mockSettings)
       setProposedSettings(mockSettings)
@@ -91,21 +82,10 @@ export default function SettingsProposalTab({ adminId }) {
       errors.push('Max print attempts per day must be between 1 and 200')
     }
     
-    if (proposedSettings.maxPagesPerJob < 1 || proposedSettings.maxPagesPerJob > 500) {
-      errors.push('Max pages per job must be between 1 and 500')
-    }
-    
-    if (proposedSettings.dailyQuota < 1 || proposedSettings.dailyQuota > 2000) {
-      errors.push('Daily quota must be between 1 and 2000')
-    }
-    
     // Check if anything changed
     const hasChanges = 
       proposedSettings.maxCopiesPerDocument != currentSettings.maxCopiesPerDocument ||
-      proposedSettings.maxPrintAttemptsPerDay != currentSettings.maxPrintAttemptsPerDay ||
-      proposedSettings.maxPagesPerJob != currentSettings.maxPagesPerJob ||
-      proposedSettings.dailyQuota != currentSettings.dailyQuota ||
-      proposedSettings.allowColorPrinting !== currentSettings.allowColorPrinting
+      proposedSettings.maxPrintAttemptsPerDay != currentSettings.maxPrintAttemptsPerDay
     
     if (!hasChanges) {
       errors.push('No changes detected. Please modify at least one setting.')
@@ -132,10 +112,7 @@ export default function SettingsProposalTab({ adminId }) {
         adminId,
         proposedSettings: {
           maxCopiesPerDocument: parseInt(proposedSettings.maxCopiesPerDocument),
-          maxPrintAttemptsPerDay: parseInt(proposedSettings.maxPrintAttemptsPerDay),
-          maxPagesPerJob: parseInt(proposedSettings.maxPagesPerJob),
-          dailyQuota: parseInt(proposedSettings.dailyQuota),
-          allowColorPrinting: proposedSettings.allowColorPrinting
+          maxPrintAttemptsPerDay: parseInt(proposedSettings.maxPrintAttemptsPerDay)
         }
       })
       
@@ -190,20 +167,6 @@ export default function SettingsProposalTab({ adminId }) {
               <label>Max Print Attempts per Day</label>
               <div className="sp-setting-value">{currentSettings.maxPrintAttemptsPerDay}</div>
             </div>
-            <div className="sp-setting-item">
-              <label>Max Pages per Job</label>
-              <div className="sp-setting-value">{currentSettings.maxPagesPerJob}</div>
-            </div>
-            <div className="sp-setting-item">
-              <label>Daily Quota (pages)</label>
-              <div className="sp-setting-value">{currentSettings.dailyQuota}</div>
-            </div>
-            <div className="sp-setting-item">
-              <label>Allow Color Printing</label>
-              <div className="sp-setting-value">
-                {currentSettings.allowColorPrinting ? '✅ Yes' : '❌ No'}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -226,7 +189,7 @@ export default function SettingsProposalTab({ adminId }) {
           <form onSubmit={handleSubmit} className="sp-proposal-form">
             <div className="sp-form-grid">
               <div className="sp-form-group">
-                <label htmlFor="maxCopies">Max Copies per Document</label>
+                <label htmlFor="maxCopies">Max Copies per Document (per day)</label>
                 <input
                   id="maxCopies"
                   type="number"
@@ -237,7 +200,7 @@ export default function SettingsProposalTab({ adminId }) {
                   disabled={hasPendingProposal || loading}
                   required
                 />
-                <span className="sp-hint">Current: {currentSettings.maxCopiesPerDocument}</span>
+                <span className="sp-hint">Current: {currentSettings.maxCopiesPerDocument} | Range: 1-100</span>
               </div>
 
               <div className="sp-form-group">
@@ -252,53 +215,7 @@ export default function SettingsProposalTab({ adminId }) {
                   disabled={hasPendingProposal || loading}
                   required
                 />
-                <span className="sp-hint">Current: {currentSettings.maxPrintAttemptsPerDay}</span>
-              </div>
-
-              <div className="sp-form-group">
-                <label htmlFor="maxPages">Max Pages per Job</label>
-                <input
-                  id="maxPages"
-                  type="number"
-                  min="1"
-                  max="500"
-                  value={proposedSettings.maxPagesPerJob}
-                  onChange={(e) => handleInputChange('maxPagesPerJob', parseInt(e.target.value))}
-                  disabled={hasPendingProposal || loading}
-                  required
-                />
-                <span className="sp-hint">Current: {currentSettings.maxPagesPerJob}</span>
-              </div>
-
-              <div className="sp-form-group">
-                <label htmlFor="dailyQuota">Daily Quota (pages)</label>
-                <input
-                  id="dailyQuota"
-                  type="number"
-                  min="1"
-                  max="2000"
-                  value={proposedSettings.dailyQuota}
-                  onChange={(e) => handleInputChange('dailyQuota', parseInt(e.target.value))}
-                  disabled={hasPendingProposal || loading}
-                  required
-                />
-                <span className="sp-hint">Current: {currentSettings.dailyQuota}</span>
-              </div>
-
-              <div className="sp-form-group">
-                <label>Allow Color Printing</label>
-                <label className="sp-toggle">
-                  <input
-                    type="checkbox"
-                    checked={proposedSettings.allowColorPrinting}
-                    onChange={(e) => handleInputChange('allowColorPrinting', e.target.checked)}
-                    disabled={hasPendingProposal || loading}
-                  />
-                  <span className="sp-toggle-slider"></span>
-                </label>
-                <span className="sp-hint">
-                  Current: {currentSettings.allowColorPrinting ? 'Enabled' : 'Disabled'}
-                </span>
+                <span className="sp-hint">Current: {currentSettings.maxPrintAttemptsPerDay} | Range: 1-200</span>
               </div>
             </div>
 
