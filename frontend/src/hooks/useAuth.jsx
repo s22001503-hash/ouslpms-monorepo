@@ -27,26 +27,15 @@ export function AuthProvider({ children }) {
           } catch (err) {
             console.warn('Backend verify failed, falling back to Firestore lookup', err)
             
-            // If we have EPF stored locally (from login), use it
-            const storedEpf = sessionStorage.getItem('userEpf')
-            if (storedEpf) {
-              const docRef = doc(db, 'users', storedEpf)
-              const snap = await getDoc(docRef)
-              if (snap.exists()) {
-                setUserRole(snap.data().role || 'user')
-                setUserEpf(storedEpf)
-              } else {
-                setUserRole('user')
-              }
+            // Lookup user by UID (users are now stored by UID)
+            const docRef = doc(db, 'users', u.uid)
+            const snap = await getDoc(docRef)
+            if (snap.exists()) {
+              const userData = snap.data()
+              setUserRole(userData.role || 'user')
+              setUserEpf(userData.epf || null)
             } else {
-              // Fallback: try to lookup by UID (if you added uid field to users collection)
-              const docRef = doc(db, 'users', u.uid)
-              const snap = await getDoc(docRef)
-              if (snap.exists()) {
-                setUserRole(snap.data().role || 'user')
-              } else {
-                setUserRole('user')
-              }
+              setUserRole('user')
             }
           }
         } catch (err) {
@@ -107,7 +96,18 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const logout = () => {
+  const logout = async () => {
+    // Clear agent token file
+    try {
+      await fetch('http://localhost:8000/print/clear-agent-token', {
+        method: 'POST'
+      })
+      console.log('✅ Agent token cleared')
+    } catch (err) {
+      console.error('Failed to clear agent token:', err)
+      // Don't block logout if this fails
+    }
+    
     // Clear sessionStorage to prevent role persistence across logins
     sessionStorage.removeItem('userEpf')
     sessionStorage.clear()

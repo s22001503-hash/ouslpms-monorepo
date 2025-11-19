@@ -1,0 +1,398 @@
+.approval-requests-tab {
+  max-width: 1200px;
+}
+
+.art-header {
+  margin-bottom: 24px;
+}
+
+.art-header h2 {
+  margin: 0 0 8px 0;
+  color: #1e3a8a;
+  font-size: 24px;
+}
+
+.art-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* Filters */
+.art-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.art-filter-btn {
+  padding: 10px 20px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.art-filter-btn:hover {
+  background: #f8fafc;
+  border-color: #3b82f6;
+}
+
+.art-filter-btn.active {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Requests List */
+.art-requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Request Card */
+.art-request-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border-left: 4px solid;
+  transition: all 0.3s ease;
+}
+
+.art-request-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.art-pending {
+  border-left-color: #f59e0b;
+}
+
+.art-approved {
+  border-left-color: #10b981;
+}
+
+.art-rejected {
+  border-left-color: #ef4444;
+}
+
+.art-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.art-card-title {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.art-request-id {
+  font-weight: 700;
+  font-size: 15px;
+  color: #1e3a8a;
+}
+
+.art-status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.art-status-pending {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.art-status-approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.art-status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.art-timestamp {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.art-card-body {
+  padding: 20px;
+}
+
+/* Sections */
+.art-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.art-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.art-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.art-row:last-child {
+  margin-bottom: 0;
+}
+
+.art-label {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.art-value {
+  color: #334155;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Block Reason */
+.art-block-reason {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+.art-block-title {
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.art-block-details {
+  color: #92400e;
+  font-size: 14px;
+}
+
+/* Justification */
+.art-justification {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.art-justification-header {
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.art-justification-text {
+  color: #1e3a8a;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Decision */
+.art-decision {
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.art-decision-approved {
+  background: #d1fae5;
+  border-color: #10b981;
+}
+
+.art-decision-rejected {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+
+.art-decision-header {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.art-decision-approved .art-decision-header {
+  color: #065f46;
+}
+
+.art-decision-rejected .art-decision-header {
+  color: #991b1b;
+}
+
+.art-decision-notes {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.art-decision-approved .art-decision-notes {
+  color: #047857;
+}
+
+.art-decision-rejected .art-decision-notes {
+  color: #b91c1c;
+}
+
+.art-decision-time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Actions */
+.art-actions {
+  margin-top: 20px;
+}
+
+.art-action-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.art-notes-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.art-notes-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.art-action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.art-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.art-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.art-btn.approve {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  flex: 1;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.art-btn.approve:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.art-btn.reject {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  flex: 1;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.art-btn.reject:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+}
+
+.art-btn.cancel {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.art-btn.cancel:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.art-btn.review {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.art-btn.review:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+/* Empty State */
+.art-empty {
+  text-align: center;
+  padding: 80px 40px;
+  color: #64748b;
+}
+
+.art-empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .art-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .art-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .art-action-buttons {
+    flex-direction: column;
+  }
+
+  .art-filters {
+    gap: 8px;
+  }
+
+  .art-filter-btn {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+}

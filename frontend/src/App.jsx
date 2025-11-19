@@ -24,6 +24,7 @@ function ProtectedRoute({ children, role }) {
     // Redirect to correct dashboard based on actual role (with replace)
     if (userRole === 'admin') return <Navigate to="/admin" replace />
     if (userRole === 'dean') return <Navigate to="/dean" replace />
+    if (userRole === 'vc') return <Navigate to="/vc" replace />
     if (userRole === 'user') return <Navigate to="/user" replace />
     return <Navigate to="/login" replace />
   }
@@ -56,6 +57,14 @@ export default function App() {
           path="/dean"
           element={
             <ProtectedRoute role="dean">
+              <DeanDashboardUI />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vc"
+          element={
+            <ProtectedRoute role="vc">
               <DeanDashboardUI />
             </ProtectedRoute>
           }

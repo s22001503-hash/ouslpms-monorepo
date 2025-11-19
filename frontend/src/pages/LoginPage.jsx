@@ -34,11 +34,16 @@ export default function LoginPage() {
       // Clear any previous session data before logging in
       sessionStorage.clear()
       
-      // Get user data from Firestore FIRST to verify role exists
-      const userDoc = await getDoc(doc(db, 'users', cleanEpf))
+      // Sign in with Firebase Auth first
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const user = userCredential.user
+      
+      // Now get user data from Firestore using UID
+      const userDoc = await getDoc(doc(db, 'users', user.uid))
       
       if (!userDoc.exists()) {
-        setError('User not found. Please contact administrator.')
+        setError('User profile not found. Please contact administrator.')
+        await auth.signOut()
         setLoading(false)
         return
       }
@@ -48,19 +53,44 @@ export default function LoginPage() {
 
       console.log('=== LOGIN DEBUG ===')
       console.log('EPF:', cleanEpf)
+      console.log('UID:', user.uid)
       console.log('User Data:', userData)
       console.log('User Role:', userRole)
       console.log('Role Type:', typeof userRole)
 
-      // Store EPF in sessionStorage BEFORE signing in so useAuth can read it immediately
-      sessionStorage.setItem('userEpf', cleanEpf)
+      // Store EPF in sessionStorage
+      sessionStorage.setItem('userEpf', userData.epf || cleanEpf)
+
+      // Get Firebase ID token for print agent authentication
+      const idToken = await user.getIdToken()
       
-      // Sign in with Firebase Auth
-      const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      const user = userCredential.user
+      // Save token to file for print agent (via backend endpoint)
+      try {
+        const tokenData = {
+          token: idToken,
+          user_id: cleanEpf,
+          role: userRole,
+          email: email
+        }
+        
+        const response = await fetch('http://localhost:8000/print/save-agent-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(tokenData)
+        })
+        
+        if (response.ok) {
+          console.log('✅ Agent token saved successfully')
+        } else {
+          console.warn('⚠️ Failed to save agent token:', await response.text())
+        }
+      } catch (tokenErr) {
+        console.error('Failed to save print agent token:', tokenErr)
+        // Don't block login if token save fails
+      }
 
       // Update last login timestamp
-      await updateDoc(doc(db, 'users', cleanEpf), {
+      await updateDoc(doc(db, 'users', user.uid), {
         lastLogin: new Date().toISOString()
       })
 
@@ -73,6 +103,9 @@ export default function LoginPage() {
       } else if (userRole === 'dean') {
         console.log('Navigating to /dean')
         navigate('/dean', { replace: true })
+      } else if (userRole === 'vc') {
+        console.log('Navigating to /vc')
+        navigate('/vc', { replace: true })
       } else if (userRole === 'user') {
         console.log('Navigating to /user')
         navigate('/user', { replace: true })

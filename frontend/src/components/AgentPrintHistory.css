@@ -1,0 +1,394 @@
+/**
+ * Agent Print History Component Styles
+ * =====================================
+ * 
+ * Styling for the local print classification history viewer.
+ * 
+ * Author: OUSL Print Management System
+ * Date: October 29, 2025
+ */
+
+/* ==================== CONTAINER ==================== */
+
+.agent-print-history {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.agent-print-history .header {
+  margin-bottom: 30px;
+}
+
+.agent-print-history .header h2 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.agent-print-history .text-muted {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* ==================== STATISTICS CARD ==================== */
+
+.agent-print-history .stats-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.agent-print-history .stats-card h4 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+}
+
+.agent-print-history .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.agent-print-history .stat {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.agent-print-history .stat-label {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.agent-print-history .stat-value {
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.agent-print-history .text-success {
+  color: #4ade80 !important;
+}
+
+.agent-print-history .text-danger {
+  color: #f87171 !important;
+}
+
+/* ==================== FILTERS ==================== */
+
+.agent-print-history .filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.agent-print-history .filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.agent-print-history .filter-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.agent-print-history .filter-group input,
+.agent-print-history .filter-group select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.agent-print-history .filter-group input:focus,
+.agent-print-history .filter-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.agent-print-history .filters button {
+  padding: 8px 20px;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.agent-print-history .filters button:hover {
+  background-color: #4b5563;
+}
+
+/* ==================== SEARCH BAR ==================== */
+
+.agent-print-history .search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.agent-print-history .search-bar input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.agent-print-history .search-bar input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.agent-print-history .search-bar button {
+  padding: 10px 25px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.agent-print-history .search-bar button:hover {
+  background-color: #5568d3;
+}
+
+/* ==================== ALERTS ==================== */
+
+.agent-print-history .alert {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.agent-print-history .alert-danger {
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.agent-print-history .alert strong {
+  font-weight: 600;
+}
+
+.agent-print-history .alert .text-muted {
+  margin-top: 5px;
+  color: #7f1d1d;
+}
+
+/* ==================== LOADING STATE ==================== */
+
+.agent-print-history .loading {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.agent-print-history .spinner {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 20px;
+  border: 4px solid #f3f4f6;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.agent-print-history .loading p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ==================== RECORDS TABLE ==================== */
+
+.agent-print-history .records-table {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.agent-print-history table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.agent-print-history thead {
+  background-color: #f9fafb;
+}
+
+.agent-print-history th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.agent-print-history td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 14px;
+  color: #374151;
+}
+
+.agent-print-history tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.agent-print-history tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==================== BADGES ==================== */
+
+.agent-print-history .badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.agent-print-history .badge-success {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.agent-print-history .badge-danger {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.agent-print-history .badge-primary {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.agent-print-history .badge-warning {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.agent-print-history .badge-secondary {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+/* ==================== EMPTY STATE ==================== */
+
+.agent-print-history .empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.agent-print-history .empty-state p:first-child {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.agent-print-history .empty-state .text-muted {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ==================== PAGINATION ==================== */
+
+.agent-print-history .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.agent-print-history .pagination button {
+  padding: 8px 16px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.agent-print-history .pagination button:hover:not(:disabled) {
+  background-color: #5568d3;
+}
+
+.agent-print-history .pagination button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.agent-print-history .pagination span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 768px) {
+  .agent-print-history {
+    padding: 15px;
+  }
+
+  .agent-print-history .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-print-history .filters {
+    flex-direction: column;
+  }
+
+  .agent-print-history .filter-group {
+    width: 100%;
+  }
+
+  .agent-print-history .records-table {
+    overflow-x: auto;
+  }
+
+  .agent-print-history table {
+    min-width: 800px;
+  }
+}

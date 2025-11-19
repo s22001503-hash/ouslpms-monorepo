@@ -382,3 +382,410 @@ export async function fetchDeanReports() {
   }
 }
 
+// ==================== OLD Policy Management API calls - REMOVED (duplicates below) ====================
+
+// ==================== Approval Requests API calls ====================
+
+/**
+ * Get user approval requests for VC review
+ */
+export async function getApprovalRequests(filter = 'all') {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/vc/approval-requests?filter=${filter}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to fetch approval requests' }))
+      throw new Error(error.detail || `Failed to fetch approval requests: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Approve user print request (VC only)
+ */
+export async function approveUserRequest(requestId, vcId, notes = '') {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/vc/approval-requests/approve`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ requestId, vcId, notes }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to approve request' }))
+      throw new Error(error.detail || `Failed to approve request: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Reject user print request (VC only)
+ */
+export async function rejectUserRequest(requestId, vcId, reason) {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/vc/approval-requests/reject`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ requestId, vcId, reason }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to reject request' }))
+      throw new Error(error.detail || `Failed to reject request: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+// ==================== System Analytics API calls ====================
+
+/**
+ * Get system metrics and analytics
+ */
+export async function getSystemMetrics() {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/admin/system-metrics`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to fetch system metrics' }))
+      throw new Error(error.detail || `Failed to fetch system metrics: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Export system report
+ */
+export async function exportReport(reportType, filters = {}) {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/admin/export-report`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ reportType, filters }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to export report' }))
+      throw new Error(error.detail || `Failed to export report: ${res.status}`)
+    }
+    return res.blob() // Return as blob for file download
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+// ==================== Policy Proposal API calls ====================
+
+/**
+ * Get user by EPF number
+ */
+export async function getUserByEPF(epf) {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/admin/user-by-epf/${epf}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'User not found' }))
+      throw new Error(error.detail || `User not found: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Get current global policies
+ */
+export async function getCurrentPolicies() {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/admin/current-policies`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to fetch current policies' }))
+      throw new Error(error.detail || `Failed to fetch current policies: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Propose a policy change (global or special user)
+ * @param {Object} proposal - Proposal data
+ * @param {string} proposal.type - 'global' or 'special_user'
+ * @param {Object} proposal.changes - For global: { maxAttemptsPerDay: {current, proposed}, ... }
+ * @param {Object} proposal.proposedPolicy - For special user: { maxAttemptsPerDay, maxCopiesPerDoc }
+ * @param {string} proposal.targetEPF - For special user: target user's EPF
+ * @param {string} proposal.justification - Justification text
+ * @param {string} proposal.adminId - Admin's EPF
+ */
+export async function proposePolicyChange(proposal) {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/admin/propose-policy`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(proposal),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to submit policy proposal' }))
+      throw new Error(error.detail || `Failed to submit policy proposal: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Get policy proposals (optionally filter by type and status)
+ * @param {string} type - Optional: 'global', 'special_user', or undefined for all
+ * @param {string} status - Optional: 'pending', 'approved', 'rejected', or undefined for all
+ */
+export async function getPolicyProposals(type = null, status = null) {
+  try {
+    const token = await getFreshToken()
+    const params = new URLSearchParams()
+    if (type) params.append('type', type)
+    if (status) params.append('status', status)
+    
+    const url = `${API_BASE}/admin/policy-proposals${params.toString() ? '?' + params.toString() : ''}`
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to fetch policy proposals' }))
+      throw new Error(error.detail || `Failed to fetch policy proposals: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Get all users with active special policies
+ */
+export async function getSpecialPolicyUsers() {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/admin/special-policy-users`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to fetch special policy users' }))
+      throw new Error(error.detail || `Failed to fetch special policy users: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Remove special policy from a user
+ * @param {string} epf - User's EPF number
+ */
+export async function removeSpecialPolicy(epf) {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/admin/remove-special-policy`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ epf }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to remove special policy' }))
+      throw new Error(error.detail || `Failed to remove special policy: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Request removal of special policy (creates proposal for VC approval)
+ * @param {string} epf - User's EPF number
+ * @param {string} adminId - Admin's EPF number
+ * @param {string} justification - Reason for removal
+ */
+export async function requestRemovalProposal(epf, adminId, justification) {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/admin/request-removal-proposal`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ 
+        targetEpf: epf,
+        requestedBy: adminId,
+        justification 
+      }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to submit removal request' }))
+      throw new Error(error.detail || `Failed to submit removal request: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+// ==================== VC Policy Management API calls ====================
+
+/**
+ * Approve a policy proposal (VC only)
+ * @param {string} proposalId - Proposal ID
+ * @param {string} vcId - VC's EPF
+ * @param {string} notes - Optional approval notes
+ */
+export async function approvePolicyProposal(proposalId, vcId, notes = '') {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/vc/policy-proposals/approve`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ proposalId, vcId, notes }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to approve policy proposal' }))
+      throw new Error(error.detail || `Failed to approve policy proposal: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+/**
+ * Reject a policy proposal (VC only)
+ * @param {string} proposalId - Proposal ID
+ * @param {string} vcId - VC's EPF
+ * @param {string} reason - Rejection reason
+ */
+export async function rejectPolicyProposal(proposalId, vcId, reason) {
+  try {
+    const token = await getFreshToken()
+    const res = await fetch(`${API_BASE}/vc/policy-proposals/reject`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ proposalId, vcId, reason }),
+    })
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: 'Failed to reject policy proposal' }))
+      throw new Error(error.detail || `Failed to reject policy proposal: ${res.status}`)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Cannot connect to server. Please check if backend is running.')
+    }
+    throw error
+  }
+}
+
+
+
+

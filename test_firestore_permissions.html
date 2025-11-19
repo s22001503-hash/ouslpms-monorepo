@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firestore Permission Test</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <h1>Firestore Permission Test</h1>
+    
+    <div id="status">Checking...</div>
+    
+    <div id="results"></div>
+    
+    <script>
+        // Firebase config for oct-project-25fad
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNvKbDO-waD_fTqUCHTkx1j3K5w3VDfnE",
+            authDomain: "oct-project-25fad.firebaseapp.com",
+            projectId: "oct-project-25fad",
+            storageBucket: "oct-project-25fad.firebasestorage.app",
+            messagingSenderId: "906025351396",
+            appId: "1:906025351396:web:f54e4be08eead9e4c2e0a1"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        const status = document.getElementById('status');
+        const results = document.getElementById('results');
+        
+        async function testFirestore() {
+            try {
+                // Check auth state
+                const user = auth.currentUser;
+                if (!user) {
+                    status.innerHTML = '❌ NOT LOGGED IN - Please login first at http://localhost:5174';
+                    return;
+                }
+                
+                status.innerHTML = `✅ Logged in as: ${user.email} (UID: ${user.uid})`;
+                
+                // Test 1: Read global_policies
+                results.innerHTML += '<h2>Test 1: Read global_policies</h2>';
+                try {
+                    const globalPoliciesRef = db.collection('global_policies');
+                    const snapshot = await globalPoliciesRef.get();
+                    results.innerHTML += `✅ SUCCESS: Read ${snapshot.size} documents<br>`;
+                    snapshot.forEach(doc => {
+                        results.innerHTML += `  - ${doc.id}: ${JSON.stringify(doc.data())}<br>`;
+                    });
+                } catch (error) {
+                    results.innerHTML += `❌ FAILED: ${error.message}<br>`;
+                }
+                
+                // Test 2: Read policy_proposals
+                results.innerHTML += '<h2>Test 2: Read policy_proposals</h2>';
+                try {
+                    const proposalsRef = db.collection('policy_proposals');
+                    const snapshot = await proposalsRef.get();
+                    results.innerHTML += `✅ SUCCESS: Read ${snapshot.size} documents<br>`;
+                    snapshot.forEach(doc => {
+                        results.innerHTML += `  - ${doc.id}: ${JSON.stringify(doc.data()).substring(0, 100)}...<br>`;
+                    });
+                } catch (error) {
+                    results.innerHTML += `❌ FAILED: ${error.message}<br>`;
+                }
+                
+                // Test 3: Read user_special_policies
+                results.innerHTML += '<h2>Test 3: Read user_special_policies</h2>';
+                try {
+                    const specialRef = db.collection('user_special_policies');
+                    const snapshot = await specialRef.get();
+                    results.innerHTML += `✅ SUCCESS: Read ${snapshot.size} documents<br>`;
+                    snapshot.forEach(doc => {
+                        results.innerHTML += `  - ${doc.id}: ${JSON.stringify(doc.data())}<br>`;
+                    });
+                } catch (error) {
+                    results.innerHTML += `❌ FAILED: ${error.message}<br>`;
+                }
+                
+            } catch (error) {
+                status.innerHTML = `❌ ERROR: ${error.message}`;
+                console.error(error);
+            }
+        }
+        
+        // Wait for auth state
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                testFirestore();
+            } else {
+                status.innerHTML = '❌ NOT LOGGED IN - <a href="http://localhost:5174">Click here to login</a>';
+            }
+        });
+    </script>
+</body>
+</html>

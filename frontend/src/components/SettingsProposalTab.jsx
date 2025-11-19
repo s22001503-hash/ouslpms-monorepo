@@ -118,7 +118,7 @@ export default function SettingsProposalTab({ adminId }) {
       
       setMessage({ 
         type: 'success', 
-        text: result.message || 'Settings proposed successfully! Your proposal has been sent to the Dean for approval.' 
+        text: result.message || 'Settings proposed successfully! Your proposal has been sent to the VC for approval.' 
       })
       
       // Refresh proposal history
@@ -148,7 +148,7 @@ export default function SettingsProposalTab({ adminId }) {
     <div className="settings-proposal-tab">
       <div className="sp-header">
         <h2>Settings Proposal</h2>
-        <p>Propose changes to system settings for Dean approval</p>
+        <p>Propose changes to system settings for VC approval</p>
       </div>
 
       {/* Current Settings (Read-Only) */}
@@ -229,7 +229,7 @@ export default function SettingsProposalTab({ adminId }) {
               </button>
               {hasPendingProposal && (
                 <p className="sp-pending-note">
-                  You have a pending proposal. Please wait for Dean approval before submitting a new one.
+                  You have a pending proposal. Please wait for VC approval before submitting a new one.
                 </p>
               )}
             </div>

@@ -1,16 +1,44 @@
 import React, { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import ChangePassword from '../components/ChangePassword'
+import PrintWorkflow from '../components/PrintWorkflow'
+import ClassificationBadge from '../components/ClassificationBadge'
 import './UserDashboardUI.css'
 
 export default function UserDashboardUI() {
   const { user, logout, userEpf } = useAuth()
-  const [activeView, setActiveView] = useState('notifications') // 'notifications', 'previousJobs', or 'changePassword'
+  const [activeView, setActiveView] = useState('notifications') // 'notifications', 'previousJobs', 'printDocument', or 'changePassword'
 
-  // Sample notifications (would come from backend in real app)
+  // Enhanced notifications with VC decisions
   const notifications = [
-    { id: 'PJ001', status: 'terminated', ts: '2024-09-24 10:30 AM' },
-    { id: 'PJ002', status: 'failed', ts: '2024-09-23 02:15 PM' },
+    { 
+      id: 'VC001', 
+      type: 'vc_approved',
+      status: 'approved', 
+      ts: '2024-11-12 09:15 AM',
+      document: 'Research_Paper_Final.pdf',
+      vcNotes: 'Approved for academic purposes. Please use duplex printing.'
+    },
+    { 
+      id: 'VC002', 
+      type: 'vc_rejected',
+      status: 'rejected', 
+      ts: '2024-11-11 03:30 PM',
+      document: 'Class_Notes.pdf',
+      vcNotes: 'Similar document was printed yesterday. Please reuse previous copies.'
+    },
+    { 
+      id: 'PJ001', 
+      type: 'print_failed',
+      status: 'terminated', 
+      ts: '2024-09-24 10:30 AM' 
+    },
+    { 
+      id: 'PJ002', 
+      type: 'print_failed',
+      status: 'failed', 
+      ts: '2024-09-23 02:15 PM' 
+    },
   ]
 
   return (
@@ -29,10 +57,16 @@ export default function UserDashboardUI() {
             🔔 Notifications
           </button>
           <button 
+            className={`ud-nav-item ${activeView === 'printDocument' ? 'active' : ''}`}
+            onClick={() => setActiveView('printDocument')}
+          >
+            🖨️ Print Document
+          </button>
+          <button 
             className={`ud-nav-item ${activeView === 'previousJobs' ? 'active' : ''}`}
             onClick={() => setActiveView('previousJobs')}
           >
-            🖨️ Previous Jobs
+            � Previous Jobs
           </button>
           <button 
             className={`ud-nav-item ${activeView === 'changePassword' ? 'active' : ''}`}
@@ -63,15 +97,58 @@ export default function UserDashboardUI() {
 
             <section className="ud-notifications">
               <div className="ud-card">
-                <div className="ud-card-header">⚠️ Notifications</div>
+                <div className="ud-card-header">🔔 Notifications</div>
                 <div className="ud-card-body">
-                  {notifications.map(n => (
-                    <div key={n.id} className="ud-notif">
-                      <div className="ud-notif-id">Print job #{n.id}</div>
-                      <div className="ud-notif-status">Status: <strong>{n.status}</strong></div>
-                      <div className="ud-notif-ts">{n.ts}</div>
-                    </div>
-                  ))}
+                  {notifications.length === 0 ? (
+                    <p style={{ textAlign: 'center', color: '#666', padding: '20px' }}>
+                      No notifications
+                    </p>
+                  ) : (
+                    notifications.map(n => (
+                      <div key={n.id} className={`ud-notif ud-notif-${n.type}`}>
+                        {n.type === 'vc_approved' && (
+                          <>
+                            <div className="ud-notif-icon">✅</div>
+                            <div className="ud-notif-content">
+                              <div className="ud-notif-title">VC Approved Your Print Request</div>
+                              <div className="ud-notif-document">Document: {n.document}</div>
+                              {n.vcNotes && (
+                                <div className="ud-notif-notes">
+                                  <strong>VC Notes:</strong> {n.vcNotes}
+                                </div>
+                              )}
+                              <div className="ud-notif-ts">{n.ts}</div>
+                            </div>
+                          </>
+                        )}
+                        {n.type === 'vc_rejected' && (
+                          <>
+                            <div className="ud-notif-icon">❌</div>
+                            <div className="ud-notif-content">
+                              <div className="ud-notif-title">VC Rejected Your Print Request</div>
+                              <div className="ud-notif-document">Document: {n.document}</div>
+                              {n.vcNotes && (
+                                <div className="ud-notif-notes">
+                                  <strong>Reason:</strong> {n.vcNotes}
+                                </div>
+                              )}
+                              <div className="ud-notif-ts">{n.ts}</div>
+                            </div>
+                          </>
+                        )}
+                        {n.type === 'print_failed' && (
+                          <>
+                            <div className="ud-notif-icon">⚠️</div>
+                            <div className="ud-notif-content">
+                              <div className="ud-notif-id">Print job #{n.id}</div>
+                              <div className="ud-notif-status">Status: <strong>{n.status}</strong></div>
+                              <div className="ud-notif-ts">{n.ts}</div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </section>
@@ -89,6 +166,16 @@ export default function UserDashboardUI() {
                 </p>
               </div>
             </div>
+          </section>
+        )}
+
+        {activeView === 'printDocument' && (
+          <section className="ud-print-section">
+            <h2>🖨️ Print Document</h2>
+            <p style={{ marginBottom: '20px', color: '#64748b' }}>
+              Upload a document to print with AI-powered classification
+            </p>
+            <PrintWorkflow userEpf={userEpf} userName={user?.displayName} />
           </section>
         )}
 

@@ -1,0 +1,448 @@
+.system-analytics-tab {
+  max-width: 1400px;
+}
+
+.sat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.sat-header h2 {
+  margin: 0 0 8px 0;
+  color: #1e3a8a;
+  font-size: 24px;
+}
+
+.sat-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.sat-header-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.sat-auto-refresh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.sat-auto-refresh input[type="checkbox"] {
+  cursor: pointer;
+}
+
+/* Metrics Grid */
+.sat-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sat-metric-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.sat-metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.sat-metric-icon {
+  font-size: 48px;
+}
+
+.sat-metric-content {
+  flex: 1;
+}
+
+.sat-metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e3a8a;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.sat-metric-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.sat-primary {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.sat-success {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+}
+
+.sat-warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+
+.sat-info {
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+}
+
+/* Section */
+.sat-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sat-section h3 {
+  margin: 0 0 20px 0;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+/* System Health */
+.sat-health-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.sat-health-card {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.sat-health-status {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #64748b;
+}
+
+.sat-health-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sat-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.sat-online {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+/* Block Reasons */
+.sat-block-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sat-block-item {
+  display: grid;
+  grid-template-columns: 1fr 3fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.sat-block-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: #334155;
+}
+
+.sat-block-count {
+  background: #e2e8f0;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.sat-block-bar {
+  background: #e2e8f0;
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.sat-block-fill {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.sat-block-percentage {
+  font-weight: 700;
+  color: #1e3a8a;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* Row Layout */
+.sat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.sat-half {
+  margin-bottom: 0;
+}
+
+/* Top Users */
+.sat-top-users {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sat-user-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.sat-user-item:hover {
+  background: #eff6ff;
+}
+
+.sat-user-rank {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.sat-user-info {
+  flex: 1;
+}
+
+.sat-user-name {
+  font-weight: 600;
+  color: #1e3a8a;
+  font-size: 14px;
+}
+
+.sat-user-dept {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.sat-user-count {
+  font-weight: 700;
+  color: #3b82f6;
+  font-size: 15px;
+}
+
+/* Recent Activity */
+.sat-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sat-activity-item {
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.sat-success {
+  background: #d1fae5;
+  border-color: #10b981;
+}
+
+.sat-blocked {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+
+.sat-pending {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.sat-activity-user {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.sat-success .sat-activity-user {
+  color: #065f46;
+}
+
+.sat-blocked .sat-activity-user {
+  color: #991b1b;
+}
+
+.sat-pending .sat-activity-user {
+  color: #78350f;
+}
+
+.sat-activity-action {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.sat-success .sat-activity-action {
+  color: #047857;
+}
+
+.sat-blocked .sat-activity-action {
+  color: #b91c1c;
+}
+
+.sat-pending .sat-activity-action {
+  color: #92400e;
+}
+
+.sat-activity-doc {
+  font-size: 12px;
+  font-style: italic;
+  margin-bottom: 2px;
+}
+
+.sat-success .sat-activity-doc {
+  color: #059669;
+}
+
+.sat-blocked .sat-activity-doc {
+  color: #dc2626;
+}
+
+.sat-pending .sat-activity-doc {
+  color: #d97706;
+}
+
+.sat-activity-time {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* Export Buttons */
+.sat-export-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.sat-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sat-btn.primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.sat-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.sat-btn.refresh {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.sat-btn.refresh:hover {
+  background: #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sat-row {
+    grid-template-columns: 1fr;
+  }
+
+  .sat-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sat-header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 768px) {
+  .sat-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sat-health-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sat-block-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .sat-block-label {
+    margin-bottom: 4px;
+  }
+
+  .sat-export-buttons {
+    flex-direction: column;
+  }
+
+  .sat-export-buttons button {
+    width: 100%;
+  }
+}

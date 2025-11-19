@@ -1,0 +1,985 @@
+.policy-proposal-tab {
+  max-width: 1200px;
+}
+
+.ppt-header {
+  margin-bottom: 24px;
+}
+
+.ppt-header h2 {
+  margin: 0 0 8px 0;
+  color: #1e3a8a;
+  font-size: 24px;
+}
+
+.ppt-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* Message */
+.ppt-message {
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+.ppt-message-success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.ppt-message-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.ppt-message-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.ppt-message-close:hover {
+  opacity: 1;
+}
+
+/* Section */
+.ppt-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ppt-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.ppt-section-header h3 {
+  margin: 0;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+/* Policies Grid */
+.ppt-policies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.ppt-policy-card {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.ppt-policy-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.ppt-policy-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+/* Buttons */
+.ppt-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ppt-btn.primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.ppt-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.ppt-btn.primary.large {
+  padding: 14px 32px;
+  font-size: 15px;
+  width: 100%;
+}
+
+.ppt-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Proposal Form */
+.ppt-proposal-form {
+  border: 2px solid #3b82f6;
+}
+
+.ppt-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ppt-info-box {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 16px;
+  border-radius: 8px;
+  color: #1e40af;
+  font-size: 14px;
+}
+
+.ppt-policies-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ppt-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ppt-form-label {
+  font-weight: 600;
+  color: #334155;
+  font-size: 14px;
+}
+
+.ppt-required {
+  color: #ef4444;
+}
+
+.ppt-form-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ppt-current-value {
+  font-size: 14px;
+  color: #64748b;
+  min-width: 150px;
+}
+
+.ppt-input {
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 150px;
+}
+
+.ppt-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.ppt-justification-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ppt-textarea {
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.ppt-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Changes Summary */
+.ppt-changes-summary {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.ppt-changes-summary h4 {
+  margin: 0 0 12px 0;
+  color: #78350f;
+  font-size: 15px;
+}
+
+.ppt-changes-summary ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #92400e;
+}
+
+.ppt-changes-summary li {
+  margin-bottom: 8px;
+}
+
+/* Proposals List */
+.ppt-proposals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ppt-proposal-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border-left: 4px solid;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.ppt-proposal-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.ppt-pending {
+  border-left-color: #f59e0b;
+}
+
+.ppt-approved {
+  border-left-color: #10b981;
+}
+
+.ppt-rejected {
+  border-left-color: #ef4444;
+}
+
+.ppt-proposal-header {
+  background: #f8fafc;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ppt-proposal-title {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ppt-proposal-id {
+  font-weight: 700;
+  color: #1e3a8a;
+  font-size: 15px;
+}
+
+.ppt-status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ppt-status-pending {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.ppt-status-approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.ppt-status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ppt-proposal-meta {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.ppt-proposal-body {
+  padding: 20px;
+}
+
+.ppt-changes-list,
+.ppt-justification-display {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ppt-changes-list:last-child,
+.ppt-justification-display:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.ppt-changes-list h4,
+.ppt-justification-display h4 {
+  margin: 0 0 12px 0;
+  color: #1e3a8a;
+  font-size: 15px;
+}
+
+.ppt-change-item {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.ppt-change-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ppt-change-values {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ppt-old-value {
+  color: #ef4444;
+  text-decoration: line-through;
+}
+
+.ppt-arrow {
+  color: #64748b;
+}
+
+.ppt-new-value {
+  color: #10b981;
+}
+
+.ppt-justification-display p {
+  margin: 0;
+  color: #475569;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* Decision */
+.ppt-decision {
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.ppt-decision-approved {
+  background: #d1fae5;
+  border-color: #10b981;
+}
+
+.ppt-decision-rejected {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+
+.ppt-decision-header {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.ppt-decision-approved .ppt-decision-header {
+  color: #065f46;
+}
+
+.ppt-decision-rejected .ppt-decision-header {
+  color: #991b1b;
+}
+
+.ppt-decision-notes {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.ppt-decision-approved .ppt-decision-notes {
+  color: #047857;
+}
+
+.ppt-decision-rejected .ppt-decision-notes {
+  color: #b91c1c;
+}
+
+.ppt-decision-time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Empty State */
+.ppt-empty {
+  text-align: center;
+  padding: 60px 40px;
+  color: #64748b;
+}
+
+.ppt-empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+/* Section Tabs */
+.ppt-section-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.ppt-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: #64748b;
+  transition: all 0.3s ease;
+  margin-bottom: -2px;
+}
+
+.ppt-tab:hover {
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+.ppt-tab.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  background: #eff6ff;
+}
+
+/* Message (updated for new structure) */
+.ppt-message.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.ppt-message.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+/* Current Policies Display */
+.ppt-current-policies {
+  margin-bottom: 32px;
+}
+
+.ppt-current-policies h3 {
+  margin: 0 0 16px 0;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+.ppt-policy-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+/* Proposal Form */
+.ppt-proposal-form {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.ppt-proposal-form h3 {
+  margin: 0 0 20px 0;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+.ppt-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.ppt-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ppt-form-row.full-width {
+  grid-column: 1 / -1;
+}
+
+.ppt-form-row label {
+  font-weight: 600;
+  color: #334155;
+  font-size: 14px;
+}
+
+.ppt-form-row input[type="number"],
+.ppt-form-row textarea {
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.ppt-form-row input[type="number"]:focus,
+.ppt-form-row textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.ppt-form-row input.changed {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.ppt-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ppt-change-indicator {
+  font-size: 12px;
+  color: #059669;
+  font-weight: 600;
+  padding: 4px 8px;
+  background: #d1fae5;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.ppt-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.ppt-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ppt-btn.primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.ppt-btn.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.ppt-btn.secondary {
+  background: white;
+  color: #64748b;
+  border: 2px solid #e2e8f0;
+}
+
+.ppt-btn.secondary:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.ppt-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Two Column Special Section */
+.ppt-special-section {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ppt-two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.ppt-special-form,
+.ppt-special-proposals {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ppt-special-form h3,
+.ppt-special-proposals h3 {
+  margin: 0 0 20px 0;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+.ppt-special-form h4 {
+  margin: 24px 0 16px 0;
+  color: #1e3a8a;
+  font-size: 16px;
+}
+
+/* EPF Search */
+.ppt-epf-search {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.ppt-epf-search input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.ppt-epf-search input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* User Info Display */
+.ppt-user-info {
+  background: #eff6ff;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.ppt-user-info h4 {
+  margin: 0 0 12px 0;
+  color: #1e3a8a;
+  font-size: 15px;
+}
+
+.ppt-user-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.ppt-user-details div {
+  color: #475569;
+}
+
+.ppt-user-details strong {
+  color: #1e3a8a;
+}
+
+.ppt-user-info-compact {
+  font-size: 13px;
+  color: #475569;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.ppt-user-info-compact strong {
+  color: #1e3a8a;
+}
+
+/* Proposals List */
+.ppt-proposals-list h3 {
+  margin: 0 0 20px 0;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+.ppt-proposal-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.ppt-proposal-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ppt-proposal-card.pending {
+  border-left: 4px solid #f59e0b;
+}
+
+.ppt-proposal-card.approved {
+  border-left: 4px solid #10b981;
+}
+
+.ppt-proposal-card.rejected {
+  border-left: 4px solid #ef4444;
+}
+
+.ppt-proposal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ppt-status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ppt-status-badge.pending {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.ppt-status-badge.approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.ppt-status-badge.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ppt-type-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ppt-type-badge.global {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.ppt-type-badge.special_user {
+  background: #e9d5ff;
+  color: #6b21a8;
+}
+
+.ppt-type-badge.removal {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ppt-proposal-date {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.ppt-proposal-changes {
+  margin-bottom: 12px;
+}
+
+.ppt-change-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.ppt-change-label {
+  font-weight: 600;
+  color: #475569;
+  font-size: 13px;
+}
+
+.ppt-change-values {
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.ppt-proposal-justification {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.ppt-proposal-justification strong {
+  color: #1e3a8a;
+}
+
+.ppt-vc-decision {
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.ppt-vc-decision.approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.ppt-vc-decision.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ppt-vc-decision strong {
+  font-weight: 700;
+}
+
+/* Filter Bar */
+.ppt-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.ppt-filter-bar label {
+  font-weight: 600;
+  color: #334155;
+  font-size: 14px;
+}
+
+.ppt-filter-bar select {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.ppt-filter-bar select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Empty State */
+.ppt-empty-state {
+  text-align: center;
+  padding: 60px 40px;
+  color: #94a3b8;
+  font-size: 14px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ppt-policies-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ppt-form-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ppt-input {
+    width: 100%;
+  }
+
+  .ppt-section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .ppt-change-values {
+    font-size: 14px;
+  }
+
+  .ppt-section-tabs {
+    flex-direction: column;
+  }
+
+  .ppt-tab {
+    border-bottom: none;
+    border-left: 3px solid transparent;
+  }
+
+  .ppt-tab.active {
+    border-left-color: #3b82f6;
+    border-bottom-color: transparent;
+  }
+
+  .ppt-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ppt-two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .ppt-user-details {
+    grid-template-columns: 1fr;
+  }
+
+  .ppt-proposal-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ppt-change-item {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

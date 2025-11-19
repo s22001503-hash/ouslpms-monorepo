@@ -1,0 +1,125 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions for authentication and authorization
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && getUserData().role == 'admin';
+    }
+    
+    function isDean() {
+      return isAuthenticated() && getUserData().role == 'dean';
+    }
+    
+    function isVC() {
+      return isAuthenticated() && getUserData().role == 'vc';
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection - now using UID as document ID
+    match /users/{userId} {
+      // Allow users to read their own data (no role check to avoid circular dependency)
+      // Admins/Deans/VCs reading other users will be checked separately
+      allow read: if isAuthenticated() && (
+        request.auth.uid == userId ||
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'dean', 'vc']
+      );
+      // Allow users to update their own data (except role)
+      allow update: if isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'email', 'uid', 'epf']);
+      // Only admins can create/delete users
+      allow create, delete: if isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Departments collection
+    match /departments/{departmentId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Roles collection
+    match /roles/{roleId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Policies collection
+    match /policies/{policyId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() || isDean();
+    }
+    
+    // Print jobs collection
+    match /print_jobs/{jobId} {
+      // Users can read their own print jobs
+      allow read: if isOwner(resource.data.user_id) || isAdmin() || isDean();
+      // System can create print jobs (using service account)
+      allow create: if true; // Backend service account creates these
+      // Only admins can update/delete
+      allow update, delete: if isAdmin();
+    }
+    
+    // Blocked prints collection
+    match /blocked_prints/{jobId} {
+      // Users can read their own blocked prints
+      allow read: if isOwner(resource.data.user_id) || isAdmin() || isDean();
+      // System can create blocked prints (using service account)
+      allow create: if true; // Backend service account creates these
+      // Only admins can update/delete
+      allow update, delete: if isAdmin();
+    }
+    
+    // System settings (admin only)
+    match /system_settings/{setting} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Policy Proposals - Admin can create, VC can approve/reject
+    match /policy_proposals/{proposalId} {
+      // All authenticated users can read proposals
+      allow read: if isAuthenticated();
+      // Admin and Dean can create proposals
+      allow create: if isAdmin() || isDean();
+      // VC can update proposals (for approval/rejection)
+      allow update: if isVC() || isAdmin();
+      // Only admin can delete proposals
+      allow delete: if isAdmin();
+    }
+    
+    // User Special Policies - Admin/VC read, system writes after VC approval
+    match /user_special_policies/{epf} {
+      // All authenticated users can read special policies
+      allow read: if isAuthenticated();
+      // Only VC and Admin can write (through approval process)
+      allow write: if isVC() || isAdmin();
+    }
+    
+    // Global Policies - Everyone can read, VC can write
+    match /global_policies/{docId} {
+      allow read: if isAuthenticated();
+      // Only VC can update global policies (through approval process)
+      allow write: if isVC() || isAdmin();
+    }
+    
+    // Allow backend service account full access
+    // (Service account requests don't have request.auth, so we allow them separately)
+    match /{document=**} {
+      allow read, write: if request.auth == null; // Service account access
+    }
+  }
+}

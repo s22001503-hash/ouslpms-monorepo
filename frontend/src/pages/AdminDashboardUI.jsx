@@ -1,29 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { createUser, deleteUser, fetchOverviewStats as fetchOverviewStatsAPI } from '../services/api'
+import { fetchOverviewStats as fetchOverviewStatsAPI } from '../services/api'
 import ChangePassword from '../components/ChangePassword'
 import OverviewTab from '../components/OverviewTab'
 import SettingsProposalTab from '../components/SettingsProposalTab'
+import PolicyProposalTab from '../components/PolicyProposalTab'
+import UserManagementTab from '../components/UserManagementTab'
+import SpecialUsersManagementTab from '../components/SpecialUsersManagementTab'
 import './AdminDashboardUI.css'
 
 export default function AdminDashboardUI() {
   const { user, logout } = useAuth()
-  const [form, setForm] = useState({ 
-    epf: '', 
-    name: '', 
-    email: '', 
-    password: '', 
-    role: 'user', 
-    department: '' 
-  })
-  const [deleteEpf, setDeleteEpf] = useState('')
-  const [message, setMessage] = useState({ type: '', text: '' })
-  const [deleteMessage, setDeleteMessage] = useState({ type: '', text: '' })
-  const [loading, setLoading] = useState(false)
-  const [deleteLoading, setDeleteLoading] = useState(false)
-  const [activeView, setActiveView] = useState('overview') // 'overview', 'add', 'remove', 'settingsProposal', or 'changePassword'
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const [activeView, setActiveView] = useState('overview') // 'overview', 'userManagement', 'settingsProposal', 'policyProposal', 'generateReport', or 'changePassword'
   const [overviewStats, setOverviewStats] = useState({
     todayPrintJobs: 0,
     pendingProposals: 0,
@@ -56,63 +44,6 @@ export default function AdminDashboardUI() {
     }
   }
 
-  const handleNavigate = (view) => {
-    setActiveView(view)
-  }
-
-  const departments = ['Computer Science', 'Engineering', 'Mathematics', 'Library']
-
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
-
-  const handleAddUser = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage({ type: '', text: '' })
-    
-    try {
-      const result = await createUser(form)
-      setMessage({ type: 'success', text: result.message || 'User created successfully!' })
-      // Clear form on success
-      setForm({ epf: '', name: '', email: '', password: '', role: 'user', department: '' })
-    } catch (error) {
-      setMessage({ type: 'error', text: error.message || 'Failed to create user' })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleRemoveUser = async (e) => {
-    e.preventDefault()
-    
-    if (!deleteEpf || !deleteEpf.trim()) {
-      setDeleteMessage({ type: 'error', text: 'Please enter an EPF number' })
-      return
-    }
-    
-    // Show confirmation dialog
-    setShowDeleteDialog(true)
-  }
-
-  const confirmDelete = async () => {
-    setShowDeleteDialog(false)
-    setDeleteLoading(true)
-    setDeleteMessage({ type: '', text: '' })
-    
-    try {
-      const result = await deleteUser(deleteEpf.trim())
-      setDeleteMessage({ type: 'success', text: result.message || `User ${deleteEpf.trim()} deleted successfully!` })
-      setDeleteEpf('') // Clear form on success
-    } catch (error) {
-      setDeleteMessage({ type: 'error', text: error.message || 'Failed to delete user' })
-    } finally {
-      setDeleteLoading(false)
-    }
-  }
-
-  const cancelDelete = () => {
-    setShowDeleteDialog(false)
-  }
-
   return (
     <div className="ad-root">
       <aside className="ad-sidebar">
@@ -128,8 +59,37 @@ export default function AdminDashboardUI() {
           >
             🏠 Overview
           </button>
+          <button 
+            className={`ad-nav-item ${activeView === 'userManagement' ? 'active' : ''}`}
+            onClick={() => setActiveView('userManagement')}
+          >
+            👥 User Management
+          </button>
+          <button 
+            className={`ad-nav-item ${activeView === 'policyProposal' ? 'active' : ''}`}
+            onClick={() => setActiveView('policyProposal')}
+          >
+            📝 Policy Proposals
+          </button>
+          <button 
+            className={`ad-nav-item ${activeView === 'specialUsers' ? 'active' : ''}`}
+            onClick={() => setActiveView('specialUsers')}
+          >
+            ⭐ Special Users
+          </button>
+          <button 
+            className={`ad-nav-item ${activeView === 'printDocument' ? 'active' : ''}`}
+            onClick={() => setActiveView('printDocument')}
+          >
+            🖨️ Print Document
+          </button>
           <button className="ad-nav-item">🔔 Notifications</button>
-          <button className="ad-nav-item">📊 Generate Report</button>
+          <button 
+            className={`ad-nav-item ${activeView === 'generateReport' ? 'active' : ''}`}
+            onClick={() => setActiveView('generateReport')}
+          >
+            📊 Generate Report
+          </button>
           <button 
             className={`ad-nav-item ${activeView === 'changePassword' ? 'active' : ''}`}
             onClick={() => setActiveView('changePassword')}
@@ -158,141 +118,236 @@ export default function AdminDashboardUI() {
         <section className="ad-main">
           {activeView === 'overview' && (
             <OverviewTab 
-              stats={overviewStats} 
-              onNavigate={handleNavigate}
-              quickActions={[
-                { icon: '👤➕', label: 'Add User', view: 'add' },
-                { icon: '👤➖', label: 'Remove User', view: 'remove' },
-                { icon: '⚙️', label: 'Propose Settings', view: 'settingsProposal' }
-              ]}
+              stats={overviewStats}
+              role="admin"
             />
+          )}
+
+          {activeView === 'userManagement' && (
+            <div className="ad-card">
+              <UserManagementTab />
+            </div>
           )}
 
           {activeView === 'settingsProposal' && (
             <SettingsProposalTab adminId={user?.epf} />
           )}
 
-          {activeView === 'add' && (
-            <div className="ad-card ad-add-user">
-              <div className="ad-card-header">Add User</div>
-              <form className="ad-card-body two-col" onSubmit={handleAddUser}>
-                {message.text && (
-                  <div className={`ad-message ${message.type}`} style={{ gridColumn: '1 / -1' }}>
-                    {message.text}
-                  </div>
-                )}
-                
-                <div className="form-row">
-                  <label>EPF Number</label>
-                  <input name="epf" value={form.epf} onChange={handleChange} required />
-                </div>
-                <div className="form-row">
-                  <label>Full Name</label>
-                  <input name="name" value={form.name} onChange={handleChange} required />
-                </div>
-                <div className="form-row">
-                  <label>Email Address</label>
-                  <input name="email" value={form.email} onChange={handleChange} type="email" required />
-                </div>
-                <div className="form-row">
-                  <label>Password</label>
-                  <div className="ad-password-wrapper">
-                    <input 
-                      name="password" 
-                      value={form.password} 
-                      onChange={handleChange} 
-                      type={showPassword ? 'text' : 'password'} 
-                      required 
-                      minLength={6} 
-                    />
-                    <button
-                      type="button"
-                      className="ad-toggle-password-btn"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                          <line x1="1" y1="1" x2="23" y2="23"></line>
-                        </svg>
-                      ) : (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                          <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                </div>
-                <div className="form-row">
-                  <label>Role</label>
-                  <select name="role" value={form.role} onChange={handleChange} required>
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
-                <div className="form-row">
-                  <label>Department</label>
-                  <select name="department" value={form.department} onChange={handleChange} required>
-                    <option value="">Select department</option>
-                    {departments.map(d => (
-                      <option key={d} value={d}>{d}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="ad-btn primary" disabled={loading}>
-                    {loading ? 'Adding User...' : 'Add User'}
-                  </button>
-                </div>
-              </form>
+          {activeView === 'policyProposal' && (
+            <div className="ad-card">
+              <PolicyProposalTab adminId={user?.epf} />
             </div>
           )}
 
-          {activeView === 'remove' && (
-            <div className="ad-card ad-remove-user">
-              <div className="ad-card-header">Remove User</div>
-              <form className="ad-card-body" onSubmit={handleRemoveUser}>
-                {deleteMessage.text && (
-                  <div className={`ad-message ${deleteMessage.type}`}>
-                    {deleteMessage.text}
+          {activeView === 'specialUsers' && (
+            <div className="ad-card">
+              <SpecialUsersManagementTab adminId={user?.epf} />
+            </div>
+          )}
+
+          {activeView === 'generateReport' && (
+            <div className="ad-card">
+              <div className="ad-card-header">📊 Generate Report</div>
+              <div className="ad-card-body">
+                <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+                  <h3 style={{ marginBottom: '24px', color: '#2d3748' }}>System Reports</h3>
+                  
+                  <div style={{ display: 'grid', gap: '20px' }}>
+                    {/* Print Activity Report */}
+                    <div style={{ 
+                      border: '1px solid #e2e8f0', 
+                      borderRadius: '8px', 
+                      padding: '20px',
+                      background: '#fff'
+                    }}>
+                      <h4 style={{ margin: '0 0 12px 0', color: '#228B22' }}>📈 Print Activity Report</h4>
+                      <p style={{ color: '#666', marginBottom: '16px', fontSize: '14px' }}>
+                        Generate detailed report of all print jobs, classifications, and user activity
+                      </p>
+                      <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+                        <input type="date" style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                        <span style={{ alignSelf: 'center' }}>📅 to</span>
+                        <input type="date" style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                      </div>
+                      <button style={{
+                        background: 'linear-gradient(135deg, #228B22 0%, #1a6b1a 100%)',
+                        color: 'white',
+                        padding: '10px 20px',
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontWeight: 600
+                      }}>
+                        📥 Generate CSV
+                      </button>
+                    </div>
+
+                    {/* Block Reasons Report */}
+                    <div style={{ 
+                      border: '1px solid #e2e8f0', 
+                      borderRadius: '8px', 
+                      padding: '20px',
+                      background: '#fff'
+                    }}>
+                      <h4 style={{ margin: '0 0 12px 0', color: '#228B22' }}>🚫 Block Reasons Report</h4>
+                      <p style={{ color: '#666', marginBottom: '16px', fontSize: '14px' }}>
+                        Export report of blocked print attempts and reasons
+                      </p>
+                      <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+                        <input type="date" style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                        <span style={{ alignSelf: 'center' }}>📅 to</span>
+                        <input type="date" style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                      </div>
+                      <button style={{
+                        background: 'linear-gradient(135deg, #228B22 0%, #1a6b1a 100%)',
+                        color: 'white',
+                        padding: '10px 20px',
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontWeight: 600
+                      }}>
+                        📥 Generate CSV
+                      </button>
+                    </div>
+
+                    {/* User Activity Report */}
+                    <div style={{ 
+                      border: '1px solid #e2e8f0', 
+                      borderRadius: '8px', 
+                      padding: '20px',
+                      background: '#fff'
+                    }}>
+                      <h4 style={{ margin: '0 0 12px 0', color: '#228B22' }}>👥 User Activity Report</h4>
+                      <p style={{ color: '#666', marginBottom: '16px', fontSize: '14px' }}>
+                        Export detailed user-wise print statistics
+                      </p>
+                      <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+                        <input type="date" style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                        <span style={{ alignSelf: 'center' }}>📅 to</span>
+                        <input type="date" style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                      </div>
+                      <button style={{
+                        background: 'linear-gradient(135deg, #228B22 0%, #1a6b1a 100%)',
+                        color: 'white',
+                        padding: '10px 20px',
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontWeight: 600
+                      }}>
+                        📥 Generate CSV
+                      </button>
+                    </div>
+
+                    {/* Policy Proposals Report */}
+                    <div style={{ 
+                      border: '1px solid #e2e8f0', 
+                      borderRadius: '8px', 
+                      padding: '20px',
+                      background: '#fff'
+                    }}>
+                      <h4 style={{ margin: '0 0 12px 0', color: '#228B22' }}>📋 Policy Proposals Report</h4>
+                      <p style={{ color: '#666', marginBottom: '16px', fontSize: '14px' }}>
+                        Export all policy proposals and their approval status
+                      </p>
+                      <button style={{
+                        background: 'linear-gradient(135deg, #228B22 0%, #1a6b1a 100%)',
+                        color: 'white',
+                        padding: '10px 20px',
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontWeight: 600
+                      }}>
+                        📥 Generate CSV
+                      </button>
+                    </div>
                   </div>
-                )}
-                
-                <div className="form-row">
-                  <label>EPF Number</label>
-                  <input 
-                    type="text"
-                    value={deleteEpf} 
-                    onChange={(e) => setDeleteEpf(e.target.value)} 
-                    placeholder="Enter EPF number to remove"
-                    required 
-                  />
                 </div>
+              </div>
+            </div>
+          )}
 
-                <div className="ad-warning-box">
-                  <strong>⚠️ Warning:</strong> This action will permanently delete the user from both Firebase Authentication and Firestore database. This cannot be undone.
+          {activeView === 'printDocument' && (
+            <div className="ad-card">
+              <div className="ad-card-header">🖨️ Print Document</div>
+              <div className="ad-card-body">
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <div style={{ 
+                    border: '2px dashed #ddd', 
+                    borderRadius: '8px', 
+                    padding: '40px', 
+                    marginBottom: '20px',
+                    background: '#f9f9f9'
+                  }}>
+                    <div style={{ fontSize: '48px', marginBottom: '16px' }}>📄</div>
+                    <p style={{ color: '#666', marginBottom: '16px' }}>
+                      Drag and drop your document here, or click to browse
+                    </p>
+                    <input 
+                      type="file" 
+                      accept=".pdf,.doc,.docx,.txt" 
+                      style={{ display: 'none' }} 
+                      id="admin-file-upload"
+                    />
+                    <label 
+                      htmlFor="admin-file-upload" 
+                      style={{
+                        background: 'linear-gradient(135deg, #228B22 0%, #1a6b1a 100%)',
+                        color: 'white',
+                        padding: '12px 24px',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        display: 'inline-block',
+                        fontWeight: 600,
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      Choose File
+                    </label>
+                  </div>
+                  
+                  <div style={{ 
+                    background: '#e8f5e9', 
+                    padding: '16px', 
+                    borderRadius: '8px',
+                    textAlign: 'left',
+                    border: '1px solid #c8e6c9'
+                  }}>
+                    <h4 style={{ margin: '0 0 12px 0', color: '#2e7d32' }}>
+                      ℹ️ Admin Print Workflow:
+                    </h4>
+                    <ol style={{ margin: 0, paddingLeft: '20px', color: '#555' }}>
+                      <li>Upload your document (PDF, DOC, DOCX, TXT)</li>
+                      <li>AI classifies as Official, Personal, or Confidential</li>
+                      <li>System checks admin policy (100 pages/day, 100 copies, all categories allowed)</li>
+                      <li>Review classification and confirm print</li>
+                    </ol>
+                  </div>
+                  
+                  <div style={{
+                    marginTop: '20px',
+                    padding: '12px',
+                    background: '#fff3e0',
+                    borderRadius: '8px',
+                    border: '1px solid #ffe0b2'
+                  }}>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#e65100' }}>
+                      ⚡ <strong>Admin Privilege:</strong> You have higher print limits and can print personal documents
+                    </p>
+                  </div>
+                  
+                  <p style={{ 
+                    marginTop: '20px', 
+                    fontSize: '14px', 
+                    color: '#666',
+                    fontStyle: 'italic'
+                  }}>
+                    🚀 <strong>Coming Soon:</strong> AI classification with Pinecone + Groq + Modal.com
+                  </p>
                 </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="ad-btn danger" disabled={deleteLoading}>
-                    {deleteLoading ? 'Deleting User...' : 'Delete User'}
-                  </button>
-                  <button 
-                    type="button" 
-                    className="ad-btn secondary" 
-                    onClick={() => {
-                      setDeleteEpf('')
-                      setDeleteMessage({ type: '', text: '' })
-                    }}
-                    disabled={deleteLoading}
-                  >
-                    Clear
-                  </button>
-                </div>
-              </form>
+              </div>
             </div>
           )}
 
@@ -303,47 +358,12 @@ export default function AdminDashboardUI() {
                   // Optionally redirect or show a message
                   console.log('Password changed successfully')
                 }}
-                onCancel={() => setActiveView('add')}
+                onCancel={() => setActiveView('overview')}
               />
             </div>
           )}
         </section>
       </main>
-
-      {/* Delete Confirmation Dialog */}
-      {showDeleteDialog && (
-        <div className="modal-overlay" onClick={cancelDelete}>
-          <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>⚠️ Confirm Delete</h3>
-              <button className="modal-close" onClick={cancelDelete}>&times;</button>
-            </div>
-            <div className="modal-body">
-              <p className="modal-warning">You are about to permanently delete user:</p>
-              <div className="modal-user-info">
-                <strong>EPF:</strong> {deleteEpf}
-              </div>
-              <div className="modal-consequences">
-                <p><strong>This action will:</strong></p>
-                <ul>
-                  <li>Remove the user from Firebase Authentication</li>
-                  <li>Delete all user data from Firestore</li>
-                  <li><strong>This action CANNOT be undone</strong></li>
-                </ul>
-              </div>
-              <p className="modal-question">Are you sure you want to proceed?</p>
-            </div>
-            <div className="modal-footer">
-              <button className="ad-btn secondary" onClick={cancelDelete}>
-                Cancel
-              </button>
-              <button className="ad-btn danger" onClick={confirmDelete}>
-                Yes, Delete User
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
