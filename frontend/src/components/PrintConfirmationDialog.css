@@ -200,6 +200,37 @@
   margin-bottom: 0;
 }
 
+.pcd-alternatives {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px dashed #fde047;
+}
+
+.pcd-alternatives strong {
+  display: block;
+  color: #854d0e;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.pcd-alt-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pcd-alt-options span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #713f12;
+  font-size: 14px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  font-weight: 500;
+}
+
 /* Action Buttons */
 .pcd-actions {
   display: flex;

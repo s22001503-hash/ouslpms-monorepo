@@ -86,8 +86,14 @@ export default function PrintConfirmationDialog({
             <ul>
               <li>Is this the final version of your document?</li>
               <li>Is this essential to be get printed?</li>
-              <li>If not, consider saving a digital copy for your records.</li>
             </ul>
+            <div className="pcd-alternatives">
+              <strong>🔄 Instead of Printing, You Could Also:</strong>
+              <div className="pcd-alt-options">
+                <span>📱 Share via WhatsApp/Telegram/Email</span>
+                <span>☁️ Save to Google Drive</span>
+              </div>
+            </div>
           </div>
 
           {/* Action Buttons */}

@@ -1,0 +1,323 @@
+/* Policy Violation Dialog Styles */
+
+.pvd-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: pvd-fade-in 0.2s ease-out;
+}
+
+@keyframes pvd-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pvd-dialog {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 650px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: pvd-slide-up 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes pvd-slide-up {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pvd-header {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  padding: 24px;
+  border-radius: 16px 16px 0 0;
+  text-align: center;
+}
+
+.pvd-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.pvd-body {
+  padding: 24px;
+}
+
+/* Violation Status Section */
+.pvd-violation {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #fee2e2;
+  border: 2px solid #fca5a5;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.pvd-violation-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.pvd-violation-text {
+  flex: 1;
+}
+
+.pvd-violation-text strong {
+  display: block;
+  color: #991b1b;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.pvd-filename {
+  color: #b91c1c;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Reason Section */
+.pvd-reason {
+  background: #fff7ed;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #fed7aa;
+}
+
+.pvd-reason h3 {
+  margin: 0 0 8px 0;
+  color: #92400e;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.pvd-reason p {
+  margin: 0;
+  color: #78350f;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Options Section */
+.pvd-options {
+  margin-bottom: 24px;
+}
+
+.pvd-options h3 {
+  margin: 0 0 16px 0;
+  color: #1e293b;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.pvd-option-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+
+.pvd-option-card:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateX(4px);
+}
+
+.pvd-option-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.pvd-option-content {
+  flex: 1;
+}
+
+.pvd-option-content strong {
+  display: block;
+  color: #1e293b;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.pvd-option-content p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* Action Buttons */
+.pvd-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pvd-btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pvd-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pvd-btn:active {
+  transform: translateY(0);
+}
+
+.pvd-btn-permission {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.pvd-btn-permission:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.pvd-btn-drive {
+  background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+  color: white;
+}
+
+.pvd-btn-drive:hover {
+  background: linear-gradient(135deg, #3367d6 0%, #2d8e47 100%);
+}
+
+.pvd-btn-cancel {
+  background: #f1f5f9;
+  color: #475569;
+  border: 2px solid #cbd5e1;
+}
+
+.pvd-btn-cancel:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+/* Permission Request Form */
+.pvd-permission-form {
+  margin-top: 20px;
+}
+
+.pvd-permission-form h3 {
+  margin: 0 0 12px 0;
+  color: #1e293b;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.pvd-form-hint {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.pvd-justification {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 16px;
+}
+
+.pvd-justification:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.pvd-form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.pvd-btn-submit {
+  flex: 1;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.pvd-btn-submit:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.pvd-btn-back {
+  background: #f1f5f9;
+  color: #475569;
+  border: 2px solid #cbd5e1;
+}
+
+.pvd-btn-back:hover {
+  background: #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .pvd-dialog {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .pvd-header h2 {
+    font-size: 20px;
+  }
+
+  .pvd-body {
+    padding: 16px;
+  }
+
+  .pvd-option-card {
+    padding: 12px;
+  }
+
+  .pvd-option-icon {
+    font-size: 24px;
+  }
+
+  .pvd-btn {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+}

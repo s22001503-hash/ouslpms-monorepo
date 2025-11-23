@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react'
 import ClassificationBadge from './ClassificationBadge'
 import PrintConfirmationDialog from './PrintConfirmationDialog'
+import PolicyViolationDialog from './PolicyViolationDialog'
+import DuplicateDocumentDialog from './DuplicateDocumentDialog'
 import { saveToDrive, isGoogleDriveAvailable } from '../services/googleDrive'
 import './PrintWorkflow.css'
 
@@ -17,6 +19,9 @@ export default function PrintWorkflow({ userEpf, userName }) {
   const [justification, setJustification] = useState('')
   const [requestSent, setRequestSent] = useState(false)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [showViolationDialog, setShowViolationDialog] = useState(false)
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false)
+  const [duplicateInfo, setDuplicateInfo] = useState(null)
   const [userDailyStats, setUserDailyStats] = useState({ used: 1, limit: 10 }) // Mock data
   const fileInputRef = useRef(null)
 
@@ -53,12 +58,20 @@ export default function PrintWorkflow({ userEpf, userName }) {
         dailyLimit: 5,
         requestedCopies: 10,
         maxCopies: 5
+      },
+      duplicateCheck: {
+        isDuplicate: true, // Set to true to test duplicate detection
+        similarityScore: 92,
+        previousDocument: {
+          title: 'Lecture_Notes_Week_5.pdf',
+          printedDate: '2025-11-17T10:30:00Z' // 2 days ago
+        }
       }
     }
 
     setClassification(mockClassification)
 
-    // Determine block scenario
+    // Block personal documents immediately (no duplicate check)
     if (mockClassification.type === 'personal') {
       setBlockReason({
         type: 'personal',
@@ -68,7 +81,22 @@ export default function PrintWorkflow({ userEpf, userName }) {
       })
       setCanRequestApproval(false)
       setUploadState('blocked')
-    } else if (!mockClassification.policyCheck.allowed) {
+      return
+    }
+
+    // Check for duplicate ONLY for official documents
+    if (mockClassification.type === 'official' &&
+        mockClassification.duplicateCheck?.isDuplicate && 
+        mockClassification.duplicateCheck?.similarityScore >= 85) {
+      setDuplicateInfo(mockClassification.duplicateCheck.previousDocument)
+      setShowDuplicateDialog(true)
+      setUploadState('results') // Still classified as valid, but show duplicate warning
+      return
+    }
+
+    // Determine policy violation scenarios (for official/confidential documents)
+    // Determine policy violation scenarios (for official/confidential documents)
+    if (!mockClassification.policyCheck.allowed) {
       if (mockClassification.policyCheck.reason === 'daily_limit') {
         setBlockReason({
           type: 'daily_limit',
@@ -87,6 +115,7 @@ export default function PrintWorkflow({ userEpf, userName }) {
         setCanRequestApproval(true)
       }
       setUploadState('blocked')
+      setShowViolationDialog(true) // Show violation dialog instead of inline
     } else {
       setUploadState('results')
     }
@@ -128,6 +157,49 @@ export default function PrintWorkflow({ userEpf, userName }) {
     setJustification('')
     setRequestSent(false)
     setShowConfirmDialog(false)
+    setShowViolationDialog(false)
+    setShowDuplicateDialog(false)
+    setDuplicateInfo(null)
+  }
+
+  const handleDuplicatePrintAnyway = () => {
+    setShowDuplicateDialog(false)
+    // Proceed to normal confirmation dialog
+    setShowConfirmDialog(true)
+  }
+
+  const handleDuplicateSaveToDrive = async () => {
+    setShowDuplicateDialog(false)
+    await handleSaveToDrive()
+  }
+
+  const handleDuplicateCancel = () => {
+    setShowDuplicateDialog(false)
+    handleReset()
+  }
+
+  const handleViolationPermissionRequest = async (justificationText) => {
+    // TODO: Call API to send HOD approval request
+    console.log('Sending HOD approval request:', {
+      file: file.name,
+      classification: classification.type,
+      reason: blockReason.type,
+      justification: justificationText
+    })
+
+    setShowViolationDialog(false)
+    alert('✅ Request sent successfully! You\'ll be notified when the HOD makes a decision.')
+    handleReset()
+  }
+
+  const handleViolationSaveToDrive = async () => {
+    setShowViolationDialog(false)
+    await handleSaveToDrive()
+  }
+
+  const handleViolationCancel = () => {
+    setShowViolationDialog(false)
+    handleReset()
   }
 
   const handleConfirmPrint = () => {
@@ -261,7 +333,7 @@ export default function PrintWorkflow({ userEpf, userName }) {
       )}
 
       {/* Results - Allowed */}
-      {uploadState === 'results' && classification && (
+      {uploadState === 'results' && classification && !showDuplicateDialog && (
         <div className="pw-results">
           <div className="pw-results-header">
             <h3>✅ Classification Complete</h3>
@@ -293,7 +365,7 @@ export default function PrintWorkflow({ userEpf, userName }) {
       )}
 
       {/* Blocked States */}
-      {uploadState === 'blocked' && blockReason && (
+      {uploadState === 'blocked' && blockReason && !showViolationDialog && (
         <div className="pw-blocked">
           <div className="pw-blocked-header">
             <h3>{blockReason.title}</h3>
@@ -310,47 +382,7 @@ export default function PrintWorkflow({ userEpf, userName }) {
             <div className={`pw-block-box ${blockReason.type}`}>
               <p className="pw-block-message">{blockReason.message}</p>
             </div>
-
-            {/* VC Approval Request Section */}
-            {canRequestApproval && !requestSent && (
-              <div className="pw-approval-request">
-                <h4>📋 Request VC Approval</h4>
-                <p className="pw-approval-hint">
-                  Explain why you need this print to be approved by the Vice Chancellor
-                </p>
-                <textarea
-                  className="pw-justification"
-                  placeholder="Example: Urgent academic materials needed for tomorrow's lecture..."
-                  value={justification}
-                  onChange={(e) => setJustification(e.target.value)}
-                  rows={4}
-                />
-                <button 
-                  className="pw-btn primary"
-                  onClick={handleSendToVC}
-                >
-                  Send to VC for Approval
-                </button>
-              </div>
-            )}
-
-            {/* Request Sent Confirmation */}
-            {requestSent && (
-              <div className="pw-request-sent">
-                <div className="pw-success-icon">✅</div>
-                <h4>Request Sent Successfully!</h4>
-                <p>Your approval request has been sent to the Vice Chancellor.</p>
-                <p className="pw-request-note">
-                  You'll be notified when the VC makes a decision.
-                </p>
-              </div>
-            )}
-
-            <div className="pw-actions">
-              <button className="pw-btn secondary" onClick={handleReset}>
-                Upload Different Document
-              </button>
-            </div>
+            <p className="pw-processing-text">Processing your options...</p>
           </div>
         </div>
       )}
@@ -376,6 +408,31 @@ export default function PrintWorkflow({ userEpf, userName }) {
         fileName={file?.name}
         remainingPrints={userDailyStats.limit - userDailyStats.used}
         dailyLimit={userDailyStats.limit}
+      />
+
+      {/* Policy Violation Dialog */}
+      <PolicyViolationDialog
+        isOpen={showViolationDialog}
+        onRequestPermission={handleViolationPermissionRequest}
+        onSaveToDrive={handleViolationSaveToDrive}
+        onCancel={handleViolationCancel}
+        fileName={file?.name}
+        violationType={blockReason?.type}
+        violationMessage={blockReason?.message}
+      />
+
+      {/* Duplicate Document Dialog */}
+      <DuplicateDocumentDialog
+        isOpen={showDuplicateDialog}
+        onPrintAnyway={handleDuplicatePrintAnyway}
+        onSaveToDrive={handleDuplicateSaveToDrive}
+        onCancel={handleDuplicateCancel}
+        currentFileName={file?.name}
+        duplicateInfo={{
+          title: duplicateInfo?.title,
+          printedDate: duplicateInfo?.printedDate,
+          similarityScore: classification?.duplicateCheck?.similarityScore
+        }}
       />
     </div>
   )

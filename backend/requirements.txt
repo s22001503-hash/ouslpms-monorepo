@@ -6,3 +6,29 @@ uvicorn
 firebase-admin
 python-dotenv
 openai
+
+# ===================================================================
+# AI Document Classification Dependencies
+# ===================================================================
+# LangChain ecosystem (compatible versions)
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-core>=0.1.28
+langchain-text-splitters>=0.0.1
+
+# Vector database
+chromadb>=0.4.22
+
+# Embeddings
+sentence-transformers>=2.3.1
+
+# LLM integration
+langchain-groq>=0.0.1
+
+# Document processing
+pypdf2>=3.0.1
+python-docx>=1.1.0
+pdfplumber>=0.10.3
+
+# Tokenization
+tiktoken>=0.5.2
